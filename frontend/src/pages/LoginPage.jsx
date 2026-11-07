@@ -3,13 +3,22 @@ import schoolCampus from '../assets/school-campus.png'
 import schoolEmblem from '../assets/school-emblem.png'
 import './LoginPage.css'
 
-function LoginPage() {
+function LoginPage({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false)
   const [message, setMessage] = useState('')
+  const [selectedRole, setSelectedRole] = useState('operator')
 
   function handleSubmit(event) {
     event.preventDefault()
-    setMessage('Login belum terhubung ke server. Silakan hubungi administrator sekolah.')
+    setMessage('')
+
+    if (selectedRole !== 'operator') {
+      const roleName = selectedRole === 'teacher' ? 'Guru' : 'Murid'
+      setMessage(`Dashboard ${roleName} akan tersedia setelah desain dan autentikasinya siap.`)
+      return
+    }
+
+    onLogin('operator')
   }
 
   return (
@@ -22,10 +31,7 @@ function LoginPage() {
             <p className="product-name">Buku Induk Siswa Elektronik</p>
           </div>
         </div>
-        <div className="school-year">
-          <span className="calendar-icon" aria-hidden="true">▣</span>
-          T.A. 2025/2026
-        </div>
+      
         <div className="topbar-actions">
           <span className="official-badge">
             <span aria-hidden="true">♙</span>
@@ -51,9 +57,7 @@ function LoginPage() {
               </div>
 
               <h1>Sistem Informasi<br />Buku Induk Sekolah</h1>
-              <p className="panel-description">
-                Satu platform aman untuk mengelola data siswa secara terintegrasi, rapi, dan efisien.
-              </p>
+            
 
               <div className="student-stat">
                 <div className="stat-heading">
@@ -65,8 +69,8 @@ function LoginPage() {
               </div>
 
               <div className="feature-row">
-                <div><span aria-hidden="true">✓</span><p><strong>Data Terstruktur</strong><small>Informasi siswa lebih rapi</small></p></div>
-                <div><span aria-hidden="true">▣</span><p><strong>Arsip Digital</strong><small>Dokumen mudah dikelola</small></p></div>
+                <div><span aria-hidden="true">✓</span><p><strong>Data Terstruktur</strong></p></div>
+                <div><span aria-hidden="true">▣</span><p><strong>Arsip Digital</strong></p></div>
               </div>
 
               <div className="validation-row">
@@ -83,20 +87,41 @@ function LoginPage() {
 
           <section className="form-panel">
             <div className="form-content">
-              <div className="staff-label"><span aria-hidden="true">♙</span> Portal Staf &amp; Tenaga Pendidik</div>
+              <div className="staff-label"><span aria-hidden="true">♙</span> Portal Buku Induk Sekolah</div>
               <h2>Selamat Datang Kembali</h2>
               <p className="form-intro">Masuk untuk melanjutkan ke dashboard pengelolaan Buku Induk Sekolah.</p>
 
               <div className="security-notice" role="note">
                 <span className="lock-symbol" aria-hidden="true">♙</span>
-                <p><strong>Akses Staf &amp; Tenaga Pendidik</strong><span>Gunakan akun resmi yang telah terdaftar di sekolah.</span></p>
+                <p><strong>Mode pratinjau</strong><span>Autentikasi server belum tersedia. Akun belum diverifikasi.</span></p>
               </div>
 
               <form className="login-form" onSubmit={handleSubmit}>
+                <fieldset className="role-picker">
+                  <legend>Masuk sebagai</legend>
+                  <div>
+                    {[
+                      { value: 'operator', label: 'Operator / Admin' },
+                      { value: 'teacher', label: 'Guru' },
+                      { value: 'student', label: 'Murid' },
+                    ].map((role) => (
+                      <button
+                        key={role.value}
+                        className={selectedRole === role.value ? 'selected' : ''}
+                        type="button"
+                        aria-pressed={selectedRole === role.value}
+                        onClick={() => { setSelectedRole(role.value); setMessage('') }}
+                      >
+                        {role.label}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+
                 <label htmlFor="username">Username atau Email <span>*</span></label>
                 <div className="input-wrap">
                   <span className="input-icon" aria-hidden="true">♙</span>
-                  <input id="username" name="username" type="text" placeholder="NIP, NUPTK, atau email dinas" autoComplete="username" required />
+                  <input id="username" name="username" type="text" placeholder={selectedRole === 'student' ? 'NIS atau NISN' : selectedRole === 'teacher' ? 'NIP, NUPTK, atau email dinas' : 'Username atau email operator'} autoComplete="username" required />
                 </div>
 
                 <label htmlFor="password">Kata Sandi <span>*</span></label>
@@ -118,11 +143,14 @@ function LoginPage() {
                   <button className="text-button" type="button" onClick={() => setMessage('Untuk mengatur ulang kata sandi, silakan hubungi administrator sekolah.')}>Lupa kata sandi?</button>
                 </div>
 
-                <button className="submit-button" type="submit">Masuk ke Dashboard <span aria-hidden="true">→</span></button>
+                <button className="submit-button" type="submit">
+                  {selectedRole === 'operator' ? 'Masuk ke Dashboard Operator' : `Masuk sebagai ${selectedRole === 'teacher' ? 'Guru' : 'Murid'}`}
+                  <span aria-hidden="true">→</span>
+                </button>
                 {message && <p className="form-message" role="status">{message}</p>}
               </form>
 
-              <div className="divider"><span>ATAU MASUK DENGAN</span></div>
+              <div className="divider"><span>AKSES ALTERNATIF</span></div>
               <button className="sso-button" type="button" onClick={() => setMessage('Login Akun Belajar.id belum dikonfigurasi untuk sekolah ini.')}>
                 <span className="belajar-mark">B</span> Akun Belajar.id (Kemdikbud) <span className="sso-tag">SSO</span>
               </button>

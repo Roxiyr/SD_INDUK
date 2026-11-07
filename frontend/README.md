@@ -21,4 +21,30 @@ src/
 └── utils/        # Fungsi bantu
 ```
 
-Folder halaman dan controller sudah disiapkan sesuai menu dashboard Admin & Operator pada rancangan. Folder modul masih kosong dan belum berisi implementasi fitur.
+Dashboard operator berada di `src/pages/dashboard`:
+
+```text
+dashboard/
+├── DashboardPage.jsx          # Kerangka dashboard, sidebar, dan ringkasan utama
+├── DashboardPage.css
+├── OperatorModulePage.jsx     # Pemilih halaman modul operator
+├── OperatorModulePage.css     # Gaya komponen modul yang dipakai bersama
+└── modules/
+    ├── ModuleDataPage.jsx     # Tabel dan kartu ringkasan reusable
+    ├── ModuleIcon.jsx
+    ├── PersetujuanPengajuan/
+    │   ├── ApprovalPage.jsx
+    │   └── ApprovalPage.css
+    ├── ProfilSekolah/
+    │   ├── SchoolProfilePage.jsx
+    │   └── SchoolProfilePage.css
+    └── screens/               # Satu folder per halaman/fitur
+        ├── DataIndukSiswa/
+        │   ├── DataIndukSiswa.jsx
+        │   └── DataIndukSiswa.css
+        ├── DataGuru/
+        ├── DataKelas/
+        └── ...
+```
+
+Setiap folder halaman menyimpan JSX dan CSS untuk satu fitur. `modules/ModuleDataPage.jsx` dan `modules/ModuleIcon.jsx` adalah komponen bersama untuk fitur yang menggunakan tabel standar. Data saat ini hanya contoh frontend; belum ada konfigurasi backend, koneksi API, atau penyimpanan server.
