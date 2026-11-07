@@ -1,0 +1,20 @@
+.approval-page-heading {
+  padding-top: 26px;
+  padding-bottom: 29px;
+}
+
+.approval-card {
+  width: min(100%, 480px);
+  justify-self: center;
+}
+
+@media (max-width: 600px) {
+  .approval-page-heading {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .approval-card {
+    padding: 23px 18px;
+  }
+}
