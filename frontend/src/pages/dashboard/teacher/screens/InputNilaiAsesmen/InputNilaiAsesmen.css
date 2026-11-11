@@ -1,0 +1,5 @@
+.teacher-assessment .teacher-module-table th:nth-child(4),
+.teacher-assessment .teacher-module-table th:nth-child(5) { min-width: 92px; text-align: center; }
+.teacher-assessment .teacher-module-table td:nth-child(4),
+.teacher-assessment .teacher-module-table td:nth-child(5) { text-align: center; }
+.teacher-assessment .teacher-module-table td:nth-child(6) { min-width: 145px; }

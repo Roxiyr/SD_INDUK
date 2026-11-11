@@ -1,0 +1,4 @@
+.teacher-profile-settings .teacher-module-table th:nth-child(3) { min-width: 215px; }
+.teacher-profile-settings .teacher-module-table th:nth-child(4),
+.teacher-profile-settings .teacher-module-table th:nth-child(5) { min-width: 105px; }
+.teacher-profile-settings .teacher-module-table td:nth-child(3) { color: #354660; }
