@@ -1,0 +1,752 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f7f8ff;
+}
+
+.topbar {
+  min-height: 58px;
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: rgba(255, 255, 255, 0.88);
+  border-bottom: 1px solid #eceef5;
+}
+
+.school-brand,
+.panel-school-brand,
+.topbar-actions,
+.school-year,
+.official-badge,
+.secure-badge {
+  display: flex;
+  align-items: center;
+}
+
+.school-brand {
+  gap: 9px;
+}
+
+.school-brand img {
+  width: 25px;
+  height: 25px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.school-name,
+.product-name {
+  margin: 0;
+}
+
+.school-name {
+  color: #15151b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.product-name {
+  margin-top: 1px;
+  color: #6f5960;
+  font-size: 9px;
+}
+
+.school-year {
+  gap: 5px;
+  padding: 4px 9px;
+  color: #34446f;
+  background: #edf1ff;
+  border-radius: 999px;
+  font-size: 9px;
+}
+
+.calendar-icon {
+  color: #9c0010;
+}
+
+.topbar-actions {
+  margin-left: auto;
+  gap: 12px;
+}
+
+.official-badge {
+  gap: 5px;
+  color: #99000d;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.secure-badge {
+  width: 24px;
+  height: 24px;
+  justify-content: center;
+  color: #fff;
+  background: #9d0010;
+  border-radius: 50%;
+  font-size: 12px;
+}
+
+.login-main {
+  flex: 1;
+  width: 100%;
+  padding: 22px 18px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.login-card {
+  width: min(100%, 1250px);
+  min-height: 530px;
+  display: grid;
+  grid-template-columns: 42% 58%;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(30, 35, 55, 0.07);
+  border-radius: 10px;
+  box-shadow: 0 12px 26px rgba(34, 39, 67, 0.12);
+}
+
+.school-panel {
+  position: relative;
+  min-height: 530px;
+  overflow: hidden;
+  color: #fff;
+  background: #493c38;
+}
+
+.campus-image,
+.panel-shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.campus-image {
+  object-fit: cover;
+  object-position: center;
+}
+
+.panel-shade {
+  background: linear-gradient(180deg, rgba(15, 15, 20, 0.18) 0%, rgba(12, 12, 16, 0.12) 36%, rgba(15, 12, 15, 0.84) 100%);
+}
+
+.panel-content,
+.panel-footer {
+  position: absolute;
+  z-index: 1;
+  right: 24px;
+  left: 24px;
+}
+
+.panel-content {
+  top: 24px;
+}
+
+.panel-school-brand {
+  gap: 8px;
+}
+
+.panel-school-brand img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+
+.panel-school-brand p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.portal-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 7px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  font-size: 9px;
+  letter-spacing: 0.3px;
+}
+
+.portal-label span {
+  width: 5px;
+  height: 5px;
+  background: #f38e86;
+  border-radius: 50%;
+}
+
+.panel-content h1 {
+  margin: 18px 0 5px;
+  color: #101015;
+  font-size: clamp(24px, 2.4vw, 33px);
+  line-height: 1.16;
+  letter-spacing: -0.8px;
+}
+
+.panel-description {
+  max-width: 390px;
+  color: #151317;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.student-stat {
+  margin-top: 62px;
+  padding: 12px;
+  background: rgba(27, 21, 21, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 8px;
+  backdrop-filter: blur(7px);
+}
+
+.stat-heading,
+.progress-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-heading {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.active-tag {
+  padding: 3px 7px;
+  background: rgba(255, 255, 255, 0.19);
+  border-radius: 4px;
+  font-size: 8px;
+}
+
+.stat-number {
+  margin-top: 6px;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.stat-number span {
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.stat-caption {
+  margin: 3px 0 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 9px;
+}
+
+.feature-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.feature-row > div {
+  min-width: 0;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(24, 21, 24, 0.6);
+  border-radius: 6px;
+}
+
+.feature-row > div > span {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.feature-row p,
+.feature-row strong,
+.feature-row small {
+  display: block;
+  margin: 0;
+}
+
+.feature-row strong {
+  font-size: 9px;
+}
+
+.feature-row small {
+  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 8px;
+}
+
+.validation-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 8px;
+}
+
+.validation-row span:not(:first-child) {
+  padding: 3px 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.panel-footer {
+  bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 9px;
+}
+
+.form-panel {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 36px 20px;
+}
+
+.form-content {
+  width: 100%;
+  max-width: 440px;
+}
+
+.staff-label {
+  width: fit-content;
+  padding: 5px 9px;
+  color: #173a96;
+  background: #eaf0ff;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.form-content h2 {
+  margin: 5px 0 2px;
+  color: #172033;
+  font-size: 22px;
+  letter-spacing: -0.35px;
+}
+
+.form-intro {
+  margin: 0;
+  color: #756a69;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.security-notice {
+  margin-top: 10px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #94000d;
+  background: #eff2ff;
+  border-radius: 7px;
+}
+
+.lock-symbol {
+  flex: 0 0 auto;
+  font-size: 17px;
+}
+
+.security-notice p,
+.security-notice strong,
+.security-notice p span {
+  display: block;
+  margin: 0;
+}
+
+.security-notice strong {
+  font-size: 9px;
+}
+
+.security-notice p span {
+  margin-top: 2px;
+  color: #71595b;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.login-form {
+  margin-top: 10px;
+}
+
+.role-picker {
+  margin: 0 0 10px;
+  padding: 0;
+  border: 0;
+}
+
+.role-picker legend {
+  margin-bottom: 5px;
+  color: #263047;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.role-picker > div {
+  display: grid;
+  grid-template-columns: 1.35fr 0.75fr 0.75fr;
+  gap: 4px;
+  padding: 4px;
+  background: #f1f3f8;
+  border-radius: 8px;
+}
+
+.role-picker button {
+  min-height: 31px;
+  padding: 4px;
+  color: #59677e;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  font-size: 9px;
+}
+
+.role-picker button.selected {
+  color: #a00010;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(23, 32, 51, 0.12);
+  font-weight: 700;
+}
+
+.role-picker button:focus-visible {
+  outline: 2px solid #9d0010;
+  outline-offset: 1px;
+}
+
+.login-form > label {
+  display: block;
+  margin-bottom: 4px;
+  color: #263047;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.login-form > label:not(:first-child) {
+  margin-top: 8px;
+}
+
+.login-form > label span {
+  color: #a00010;
+}
+
+.input-wrap {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 10px;
+  border: 1px solid #edf0f5;
+  border-radius: 7px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input-wrap:focus-within {
+  border-color: #9d0010;
+  box-shadow: 0 0 0 3px rgba(157, 0, 16, 0.08);
+}
+
+.input-icon {
+  color: #806b6b;
+  font-size: 13px;
+}
+
+.input-wrap input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 0;
+  color: #20283a;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-size: 11px;
+}
+
+.input-wrap input::placeholder {
+  color: #b6a8a6;
+}
+
+.password-toggle {
+  padding: 4px;
+  color: #705e5f;
+  background: transparent;
+  border: 0;
+  font-size: 15px;
+}
+
+.password-toggle:focus-visible,
+.text-button:focus-visible,
+.admin-help button:focus-visible {
+  outline: 2px solid #9d0010;
+  outline-offset: 2px;
+}
+
+.form-options {
+  margin-top: 9px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.remember-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #283146;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.remember-option input {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  accent-color: #9d0010;
+}
+
+.text-button,
+.admin-help button {
+  padding: 0;
+  color: #a00010;
+  background: transparent;
+  border: 0;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.submit-button {
+  width: 100%;
+  min-height: 38px;
+  margin-top: 10px;
+  color: #fff;
+  background: #a00010;
+  border: 0;
+  border-radius: 7px;
+  box-shadow: 0 3px 6px rgba(93, 0, 10, 0.14);
+  font-size: 11px;
+  font-weight: 700;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.submit-button:hover {
+  background: #84000d;
+}
+
+.submit-button:active {
+  transform: translateY(1px);
+}
+
+.submit-button span {
+  margin-left: 4px;
+  font-size: 15px;
+}
+
+.form-message {
+  margin-top: 9px;
+  padding: 8px 10px;
+  color: #7b0010;
+  background: #fff1f2;
+  border-radius: 5px;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.divider {
+  position: relative;
+  margin: 12px 0 8px;
+  text-align: center;
+}
+
+.divider::before {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 1px;
+  content: '';
+  background: #edf0f5;
+}
+
+.divider span {
+  position: relative;
+  padding: 0 10px;
+  color: #765d5e;
+  background: #fff;
+  font-size: 8px;
+}
+
+.sso-button {
+  width: 100%;
+  min-height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  color: #1c263b;
+  background: #eff2ff;
+  border: 0;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.sso-button:hover {
+  background: #e5eaff;
+}
+
+.belajar-mark {
+  width: 15px;
+  height: 15px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: #a00010;
+  border-radius: 50%;
+  font-size: 9px;
+}
+
+.sso-tag {
+  padding: 3px 5px;
+  color: #a00010;
+  background: #e4eaff;
+  border-radius: 3px;
+  font-size: 8px;
+}
+
+.admin-help {
+  margin: 13px 0 2px;
+  color: #766969;
+  text-align: center;
+  font-size: 9px;
+}
+
+.admin-help button {
+  font-size: inherit;
+}
+
+.copyright {
+  margin: 0;
+  color: #887a79;
+  text-align: center;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.page-footer {
+  min-height: 38px;
+  padding: 8px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  color: #705a5a;
+  background: #fff;
+  border-top: 1px solid #eceef5;
+  font-size: 9px;
+}
+
+.page-footer strong {
+  color: #a00010;
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    min-height: 54px;
+    padding: 8px 12px;
+  }
+
+  .school-name {
+    font-size: 11px;
+  }
+
+  .school-year,
+  .official-badge {
+    display: none;
+  }
+
+  .login-main {
+    padding: 14px 12px 22px;
+  }
+
+  .login-card {
+    max-width: 520px;
+    grid-template-columns: 1fr;
+  }
+
+  .school-panel {
+    min-height: 430px;
+  }
+
+  .panel-content,
+  .panel-footer {
+    right: 18px;
+    left: 18px;
+  }
+
+  .panel-content {
+    top: 18px;
+  }
+
+  .student-stat {
+    margin-top: 35px;
+  }
+
+  .panel-footer {
+    bottom: 14px;
+  }
+
+  .form-panel {
+    padding: 28px 22px;
+  }
+
+  .page-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 380px) {
+  .school-name {
+    font-size: 10px;
+  }
+
+  .panel-content h1 {
+    font-size: 23px;
+  }
+
+  .student-stat {
+    margin-top: 24px;
+  }
+
+  .feature-row {
+    gap: 5px;
+  }
+
+  .feature-row > div {
+    padding: 6px;
+  }
+
+  .form-panel {
+    padding: 24px 16px;
+  }
+}

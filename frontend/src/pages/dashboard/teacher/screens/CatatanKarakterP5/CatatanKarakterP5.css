@@ -1,0 +1,4 @@
+.teacher-character-notes .teacher-module-table th:nth-child(3) { min-width: 115px; }
+.teacher-character-notes .teacher-module-table th:nth-child(4),
+.teacher-character-notes .teacher-module-table th:nth-child(5) { min-width: 165px; }
+.teacher-character-notes .teacher-module-table td:nth-child(4) { white-space: normal; }

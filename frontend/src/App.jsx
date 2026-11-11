@@ -1,9 +1,14 @@
 import { useState } from 'react'
-import LoginPage from './pages/LoginPage.jsx'
+import LoginPage from './pages/loginpage/LoginPage.jsx'
 import DashboardPage from './pages/dashboard/DashboardPage.jsx'
+import TeacherDashboardPage from './pages/dashboard/teacher/TeacherDashboardPage.jsx'
 
 function App() {
   const [activeRole, setActiveRole] = useState(null)
+
+  if (activeRole === 'teacher') {
+    return <TeacherDashboardPage onLogout={() => setActiveRole(null)} />
+  }
 
   if (activeRole === 'operator') {
     return <DashboardPage onLogout={() => setActiveRole(null)} />

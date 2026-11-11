@@ -1,0 +1,4 @@
+.teacher-student-list .teacher-module-table th:nth-child(3) { min-width: 90px; }
+.teacher-student-list .teacher-module-table th:nth-child(4),
+.teacher-student-list .teacher-module-table th:nth-child(5) { min-width: 150px; }
+.teacher-student-list .teacher-module-table td:nth-child(5) { white-space: normal; }
