@@ -12,11 +12,6 @@ function LoginPage({ onLogin }) {
     event.preventDefault()
     setMessage('')
 
-    if (selectedRole === 'student') {
-      setMessage('Dashboard Murid akan tersedia setelah desain dan autentikasinya siap.')
-      return
-    }
-
     onLogin(selectedRole)
   }
 
