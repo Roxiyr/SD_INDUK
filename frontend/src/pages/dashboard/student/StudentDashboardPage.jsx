@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import schoolEmblem from '../../../assets/school-emblem.png'
+import useSessionState from '../../../hooks/useSessionState.js'
 import StudentScreens from './screens/StudentScreens.jsx'
 import './StudentDashboardPage.css'
 
@@ -37,6 +38,7 @@ const subjects = [
 ]
 
 const tabs = ['Nilai & Hasil Belajar', 'Biodata Pribadi Saya', 'Unggah Dokumen', 'Jadwal Pelajaran']
+const studentPageOptions = ['Beranda Siswa', ...tabs, ...navigationGroups.flatMap((group) => group.items.map((item) => item.tab))]
 
 function Icon({ name, size = 17 }) {
   const paths = {
@@ -60,7 +62,7 @@ function Icon({ name, size = 17 }) {
 }
 
 function StudentDashboardPage({ onLogout }) {
-  const [activeTab, setActiveTab] = useState('Beranda Siswa')
+  const [activeTab, setActiveTab] = useSessionState('sd-induk.studentPage', 'Beranda Siswa', studentPageOptions)
   const [search, setSearch] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [notice, setNotice] = useState('')

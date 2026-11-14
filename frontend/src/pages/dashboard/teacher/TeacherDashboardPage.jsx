@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import schoolEmblem from '../../../assets/school-emblem.png'
+import useSessionState from '../../../hooks/useSessionState.js'
 import TeacherScreens from './screens/TeacherScreens.jsx'
 import './TeacherDashboardPage.css'
 
@@ -36,6 +37,8 @@ const students = [
   { initials: 'DW', name: 'Dimas Wahyu Pratama', attendance: '92,0%', average: '78,0', character: 'Bimbingan', color: 'teal' },
 ]
 
+const teacherPageOptions = ['Dashboard Guru', ...navigationGroups.flatMap((group) => group.items.map((item) => item.label))]
+
 function Icon({ name, size = 17 }) {
   const paths = {
     grid: <><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></>,
@@ -64,7 +67,7 @@ function Icon({ name, size = 17 }) {
 }
 
 function TeacherDashboardPage({ onLogout }) {
-  const [activePage, setActivePage] = useState('Dashboard Guru')
+  const [activePage, setActivePage] = useSessionState('sd-induk.teacherPage', 'Dashboard Guru', teacherPageOptions)
   const [search, setSearch] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [notice, setNotice] = useState('')

@@ -1,6 +1,6 @@
 # SD Induk
 
-Proyek ini berisi aplikasi frontend React dengan Vite. Folder `backend` saat ini belum berisi file.
+Proyek ini berisi aplikasi frontend React dengan Vite dan scaffold folder backend. Backend belum memiliki server, API, atau koneksi database. Lihat [backend/README.md](./backend/README.md) untuk status, alur data, rancangan ERD, dan kebutuhan yang belum diputuskan.
 
 ## Menjalankan frontend
 
