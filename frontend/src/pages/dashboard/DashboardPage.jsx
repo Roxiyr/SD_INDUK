@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import schoolEmblem from '../../assets/school-emblem.png'
+import useSessionState from '../../hooks/useSessionState.js'
 import OperatorModulePage from './OperatorModulePage.jsx'
 import './DashboardPage.css'
 
@@ -54,6 +55,8 @@ const studentGroups = [
   { phase: 'Fase C', male: 81, female: 73 },
 ]
 
+const operatorPageOptions = ['Dashboard', ...navigationGroups.flatMap((group) => group.items.map((item) => item.label))]
+
 function Icon({ name, size = 18 }) {
   const paths = {
     grid: <><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></>,
@@ -86,8 +89,8 @@ function Icon({ name, size = 18 }) {
 }
 
 function DashboardPage({ onLogout }) {
-  const [activePage, setActivePage] = useState('Dashboard')
-  const [activeRole, setActiveRole] = useState('Admin')
+  const [activePage, setActivePage] = useSessionState('sd-induk.operatorPage', 'Dashboard', operatorPageOptions)
+  const [activeRole, setActiveRole] = useSessionState('sd-induk.operatorRole', 'Admin', ['Admin', 'Guru', 'Murid'])
   const [search, setSearch] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [showStudentForm, setShowStudentForm] = useState(false)
