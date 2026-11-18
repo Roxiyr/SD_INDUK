@@ -150,7 +150,7 @@
 
 .dashboard-content { max-width: 1600px; margin: 0 auto; padding: 0 26px 26px; }
 .welcome-banner {
-  min-height: 178px;
+  min-height: 180px;
   position: relative;
   display: flex;
   align-items: center;
@@ -160,7 +160,7 @@
   padding: 27px 30px;
   color: #fff;
   background: linear-gradient(110deg, #ae0d17 0%, #d91e29 100%);
-  border-radius: 0 0 24px 24px;
+  border-radius: 24px;
   box-shadow: 0 10px 20px #a50e1826;
 }
 .welcome-banner::before { content: ''; width: 210px; height: 210px; position: absolute; top: -65px; right: 0; border: 38px solid #ffffff0c; border-radius: 50%; }
@@ -294,7 +294,7 @@
   .topbar-actions { gap: 6px; }
   .notification-button, .topbar-avatar { width: 34px; height: 34px; }
   .dashboard-content { padding: 0 11px 18px; }
-  .welcome-banner { min-height: 0; align-items: flex-start; flex-direction: column; gap: 17px; padding: 22px 18px 18px; border-radius: 0 0 18px 18px; }
+  .welcome-banner { min-height: 0; align-items: flex-start; flex-direction: column; gap: 17px; padding: 22px 18px 18px; border-radius: 18px; }
   .welcome-tags { gap: 5px; margin-bottom: 12px; }
   .welcome-tags span { padding: 5px 8px; font-size: 7px; }
   .welcome-copy h1 { max-width: 320px; font-size: 22px; line-height: 1.2; }
