@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import schoolEmblem from '../../../assets/school-emblem.png'
 import useSessionState from '../../../hooks/useSessionState.js'
+import { getTeacherDashboard } from '../../../services/dashboard/dashboardService.js'
 import TeacherScreens from './screens/TeacherScreens.jsx'
 import './TeacherDashboardPage.css'
 
@@ -29,15 +30,11 @@ const navigationGroups = [
   },
 ]
 
-const students = [
-  { initials: 'AP', name: 'Aditya Pratama', attendance: '100%', average: '92,4', character: 'Sangat baik', color: 'blue' },
-  { initials: 'AR', name: 'Aisyah Rahma Putri', attendance: '98,2%', average: '89,8', character: 'Sangat baik', color: 'pink' },
-  { initials: 'BA', name: 'Bima Arya Kusuma', attendance: '96,5%', average: '84,5', character: 'Berkembang', color: 'purple' },
-  { initials: 'CK', name: 'Citra Kirana Dewi', attendance: '100%', average: '95,1', character: 'Sangat baik', color: 'orange' },
-  { initials: 'DW', name: 'Dimas Wahyu Pratama', attendance: '92,0%', average: '78,0', character: 'Bimbingan', color: 'teal' },
-]
-
 const teacherPageOptions = ['Dashboard Guru', ...navigationGroups.flatMap((group) => group.items.map((item) => item.label))]
+
+const avatarColors = ['blue', 'pink', 'purple', 'orange', 'teal']
+const initialsFromName = (name = '') => name.split(/\s+/).slice(0, 2).map((part) => part[0] || '').join('').toUpperCase()
+const formatScore = (score) => score === null || score === undefined ? '—' : Number(score).toLocaleString('id-ID', { maximumFractionDigits: 1 })
 
 function Icon({ name, size = 17 }) {
   const paths = {
@@ -71,6 +68,25 @@ function TeacherDashboardPage({ onLogout }) {
   const [search, setSearch] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [notice, setNotice] = useState('')
+  const [targetStudentNisn, setTargetStudentNisn] = useState('')
+  const [dashboardData, setDashboardData] = useState(null)
+  const [loadingDashboard, setLoadingDashboard] = useState(true)
+  const [dashboardError, setDashboardError] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+    getTeacherDashboard()
+      .then((result) => {
+        if (!cancelled) setDashboardData(result)
+      })
+      .catch((error) => {
+        if (!cancelled) setDashboardError(error.message)
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingDashboard(false)
+      })
+    return () => { cancelled = true }
+  }, [])
 
   function showNotice(message) {
     setNotice(message)
@@ -82,9 +98,23 @@ function TeacherDashboardPage({ onLogout }) {
     setNotice('')
   }
 
-  const filteredStudents = students.filter((student) =>
-    `${student.name} ${student.initials}`.toLowerCase().includes(search.toLowerCase()),
+  function openGradebook(nisn = '') {
+    setTargetStudentNisn(nisn)
+    selectPage('Input Nilai & Asesmen')
+  }
+
+  function openCorrection(nisn) {
+    setTargetStudentNisn(nisn)
+    selectPage('Usulan Koreksi Data')
+  }
+
+  const teacherName = dashboardData?.profile?.name || 'Nama guru belum tersedia'
+  const classNames = dashboardData?.classes?.map((item) => item.nama_kelas).join(', ')
+  const academicYear = dashboardData?.academicYear?.nama_tahun_ajaran || 'Tahun ajaran belum aktif'
+  const filteredStudents = (dashboardData?.students || []).filter((student) =>
+    `${student.nama_lengkap} ${student.nisn}`.toLowerCase().includes(search.toLowerCase()),
   )
+  const reportProgress = dashboardData?.metrics?.reportProgress ?? 0
 
   return (
     <div className="teacher-app">
@@ -122,8 +152,8 @@ function TeacherDashboardPage({ onLogout }) {
 
         <div className="teacher-account">
           <div className="teacher-profile">
-            <span className="teacher-avatar">SW</span>
-            <span><strong>Dra. Sri Wahyuni, S.Pd</strong><small>Wali Kelas IV A</small></span>
+            <span className="teacher-avatar">{initialsFromName(teacherName)}</span>
+            <span><strong>{teacherName}</strong><small>{classNames || 'Belum ada penugasan kelas'}</small></span>
           </div>
           <button type="button" className="teacher-logout" onClick={onLogout} aria-label="Keluar">
             <Icon name="arrow" size={16} />
@@ -138,7 +168,7 @@ function TeacherDashboardPage({ onLogout }) {
           <div className="teacher-breadcrumb">
             <button className="teacher-mobile-menu" type="button" onClick={() => setSidebarOpen(true)} aria-label="Buka navigasi">☰</button>
             <Icon name="book" size={16} /><span>{activePage === 'Dashboard Guru' ? 'Buku Induk' : activePage}</span><span className="teacher-breadcrumb-divider">/</span>
-            <span className="teacher-term-badge">T.A. 2025/2026 Ganjil</span>
+            <span className="teacher-term-badge">{academicYear}</span>
           </div>
           <label className="teacher-search">
             <Icon name="search" size={17} />
@@ -146,63 +176,73 @@ function TeacherDashboardPage({ onLogout }) {
             <kbd>⌘ K</kbd>
           </label>
           <div className="teacher-topbar-actions">
-            <span className="teacher-sync"><i />Dapodik: 10:45 WIB</span>
+            <span className="teacher-sync"><i />{loadingDashboard ? 'Memuat data' : dashboardError ? 'Data gagal dimuat' : 'Database terhubung'}</span>
             <button type="button" className="teacher-icon-button" aria-label="Notifikasi" onClick={() => showNotice('Tidak ada notifikasi baru.')}><Icon name="bell" /><i /></button>
             <button type="button" className="teacher-topbar-avatar" aria-label="Profil guru" onClick={() => selectPage('Profil Guru & Akun')}><Icon name="users" /></button>
           </div>
         </header>
 
         <div className="teacher-content">
+          {dashboardError && <div className="teacher-notice" role="alert">{dashboardError}</div>}
           {notice && <div className="teacher-notice" role="status">{notice}<button type="button" onClick={() => setNotice('')} aria-label="Tutup">×</button></div>}
 
           {activePage === 'Dashboard Guru' ? (
             <>
           <section className="teacher-welcome">
             <div className="teacher-welcome-main">
-              <div className="teacher-tags"><span>WALI KELAS IV A - FASE B</span><span>T.A. 2025/2026 Ganjil</span><span className="synced">Dapodik tersinkron</span></div>
-              <h1>Selamat Bertugas, Ibu<br />Dra. Sri Wahyuni, M.Pd</h1>
-              <p>Rekapitulasi akademik, buku induk siswa, dan asesmen capaian pembelajaran Fase B SDN Batu Ampar 12 Pagi hari ini.</p>
+              <div className="teacher-tags"><span>{classNames || 'Belum ada kelas binaan'}</span><span>{academicYear}</span><span className="synced">{loadingDashboard ? 'Memuat...' : 'Data database'}</span></div>
+              <h1>Selamat Bertugas,<br />{teacherName}</h1>
+              <p>Ringkasan kelas, jadwal, nilai, dan presensi berdasarkan data yang tersimpan.</p>
             </div>
             <div className="teacher-welcome-actions">
-              <button type="button" className="primary" onClick={() => showNotice('Form input nilai harian siap dibuka.')}><Icon name="plus" size={16} />Input nilai harian</button>
-              <button type="button" onClick={() => showNotice('Cetak leger rapor dipilih.')}><Icon name="file" size={16} />Cetak leger rapor</button>
+              <button type="button" className="primary" onClick={() => openGradebook()}><Icon name="plus" size={16} />Input nilai harian</button>
+              <button type="button" onClick={() => selectPage('Leger Nilai Kelas')}><Icon name="file" size={16} />Lihat leger rapor</button>
               <button type="button" onClick={() => selectPage('Usulan Koreksi Data')}><Icon name="upload" size={16} />Usulan koreksi</button>
             </div>
             <div className="teacher-deadline">
               <span className="deadline-icon"><Icon name="bell" size={18} /></span>
-              <div><strong>Penguncian Buku Induk Rapor Semester Ganjil</strong><small>Lengkapi leger nilai dan catatan karakter sebelum periode penguncian.</small></div>
-              <span className="deadline-time"><small>Tenggat waktu</small><strong>Tersisa 14 hari</strong></span>
+              <div>
+                <strong>{dashboardData?.announcements?.[0]?.judul || 'Informasi sekolah'}</strong>
+                <small>{dashboardData?.announcements?.[0]?.isi || 'Belum ada pengumuman yang ditujukan kepada guru.'}</small>
+              </div>
+              <span className="deadline-time"><small>Tahun ajaran</small><strong>{academicYear}</strong></span>
             </div>
           </section>
 
           <section className="teacher-metrics" aria-label="Ringkasan kelas">
-            <MetricCard title="Siswa binaan" value="32" detail="Kehadiran 98,4%" icon="users" tone="red" />
-            <MetricCard title="Progres nilai rapor" value="88%" detail="6 dari 7 mapel tuntas" icon="trend" tone="blue" />
-            <MetricCard title="Catatan karakter P5" value="28/32" detail="4 dalam review wali kelas" icon="activity" tone="purple" />
-            <MetricCard title="Usulan koreksi data" value="2" detail="Menunggu verifikasi TU" icon="refresh" tone="orange" />
+            <MetricCard title="Siswa binaan" value={loadingDashboard ? '…' : String(dashboardData?.metrics?.students ?? 0)} detail={dashboardData?.metrics?.attendanceRate == null ? 'Belum ada data presensi' : `Kehadiran ${dashboardData.metrics.attendanceRate}%`} icon="users" tone="red" />
+            <MetricCard title="Progres nilai rapor" value={loadingDashboard ? '…' : `${reportProgress}%`} detail={`${dashboardData?.metrics?.reportStudents ?? 0} siswa memiliki rapor`} icon="trend" tone="blue" />
+            <MetricCard title="Catatan karakter P5" value={loadingDashboard ? '…' : `${dashboardData?.metrics?.p5Students ?? 0}/${dashboardData?.metrics?.students ?? 0}`} detail="Siswa dengan data P5 tersimpan" icon="activity" tone="purple" />
+            <MetricCard title="Usulan koreksi data" value={loadingDashboard ? '…' : String(dashboardData?.metrics?.pendingRequests ?? 0)} detail="Menunggu tinjauan" icon="refresh" tone="orange" />
           </section>
 
           <section className="teacher-overview">
             <article className="teacher-panel schedule-panel">
               <div className="teacher-panel-heading">
-                <div><h2>Jadwal Mengajar Hari Ini</h2><p>Rabu, 18 Juni 2025 · Kelas IV A</p></div>
-                <span className="live-badge">Sedang berlangsung</span>
+                <div><h2>Jadwal Mengajar Hari Ini</h2><p>{dashboardData?.schedule?.[0]?.hari || 'Hari ini'} · {classNames || 'Belum ada kelas'}</p></div>
+                <span className="live-badge">{loadingDashboard ? 'Memuat...' : dashboardData?.schedule?.length ? `${dashboardData.schedule.length} jadwal` : 'Tidak ada jadwal'}</span>
               </div>
               <div className="schedule-list">
-                <ScheduleCard time="07.30–09.00" subject="Matematika" topic="Pecahan & desimal" />
-                <ScheduleCard time="09.30–11.00" subject="IPAS" topic="Alam & sosial" active />
-                <ScheduleCard time="11.15–12.30" subject="Karakter P5 & Literasi" topic="Gaya hidup berkelanjutan" />
+                {dashboardData?.schedule?.map((item) => (
+                  <ScheduleCard
+                    key={item.id_jadwal}
+                    time={`${String(item.jam_mulai).slice(0, 5)}–${String(item.jam_selesai).slice(0, 5)}`}
+                    subject={item.nama_mapel}
+                    topic={`${item.nama_kelas}${item.ruang ? ` · ${item.ruang}` : ''}`}
+                  />
+                ))}
+                {!loadingDashboard && !dashboardData?.schedule?.length && <p className="teacher-empty-state">Belum ada jadwal untuk hari ini.</p>}
               </div>
             </article>
 
             <article className="teacher-panel mastery-panel">
               <div className="teacher-panel-heading">
-                <div><h2>Ketuntasan KKTP Kelas</h2><p>Standar capaian Fase B</p></div>
+                <div><h2>Progres Rapor Kelas</h2><p>Berdasarkan rapor yang tersimpan</p></div>
                 <span className="mastery-pulse"><Icon name="activity" size={18} /></span>
               </div>
-              <div className="mastery-chart"><div><strong>94%</strong><span>TUNTAS</span></div></div>
+              <div className="mastery-chart" style={{ background: `conic-gradient(#bd101b 0% ${reportProgress}%, #f5e5e6 ${reportProgress}% 100%)` }}><div><strong>{loadingDashboard ? '…' : `${reportProgress}%`}</strong><span>RAPOR</span></div></div>
               <div className="mastery-legend">
-                <div><strong>30</strong><span>Mahir</span></div><div><strong>2</strong><span>Cakap</span></div><div><strong>0</strong><span>Perlu</span></div>
+                <div><strong>{dashboardData?.metrics?.reportStudents ?? 0}</strong><span>Tersimpan</span></div><div><strong>{Math.max((dashboardData?.metrics?.students ?? 0) - (dashboardData?.metrics?.reportStudents ?? 0), 0)}</strong><span>Belum ada</span></div>
               </div>
             </article>
           </section>
@@ -210,7 +250,7 @@ function TeacherDashboardPage({ onLogout }) {
           <section className="teacher-lower-grid">
             <article className="teacher-panel student-panel">
               <div className="teacher-panel-heading">
-                <div><h2>Daftar Siswa Binaan Kelas IV A</h2><p>Pantauan akademik dan buku induk semester berjalan</p></div>
+                <div><h2>Daftar Siswa Binaan{classNames ? ` · ${classNames}` : ''}</h2><p>{dashboardData?.metrics?.students ?? 0} siswa terdaftar · {academicYear}</p></div>
                 <button type="button" className="teacher-text-link" onClick={() => selectPage('Daftar Siswa Binaan')}>Buka semua siswa <span>→</span></button>
               </div>
               <div className="student-table-wrap">
@@ -218,13 +258,14 @@ function TeacherDashboardPage({ onLogout }) {
                   <thead><tr><th>Siswa &amp; Identitas</th><th>Kehadiran</th><th>Rata-rata</th><th>Karakter P5</th><th>Aksi</th></tr></thead>
                   <tbody>
                     {filteredStudents.map((student, index) => (
-                      <tr key={student.initials}>
-                        <td><div className="student-identity"><span className={`student-avatar ${student.color}`}>{student.initials}</span><span><strong>{student.name}</strong><small>NISN 001234567{index + 1}</small></span></div></td>
-                        <td className="attendance-value">{student.attendance}</td><td className="average-value">{student.average}</td><td><span className="character-badge">{student.character}</span></td>
-                        <td><button className="student-action" type="button" onClick={() => showNotice(`Rapor ${student.name} dipilih.`)}>Rapor</button></td>
+                      <tr key={student.nisn}>
+                        <td><div className="student-identity"><span className={`student-avatar ${avatarColors[index % avatarColors.length]}`}>{initialsFromName(student.nama_lengkap)}</span><span><strong>{student.nama_lengkap}</strong><small>NISN {student.nisn}</small></span></div></td>
+                        <td className="attendance-value">{student.total_hari ? `${Math.round((student.hadir / student.total_hari) * 1000) / 10}%` : '—'}</td><td className="average-value">{formatScore(student.nilai_rata_rata)}</td><td><span className="character-badge">{student.catatan_p5 ? `${student.catatan_p5} catatan P5` : 'Belum ada P5'}</span></td>
+                        <td><button className="student-action" type="button" onClick={() => openGradebook(student.nisn)}>Rapor</button></td>
                       </tr>
                     ))}
-                    {filteredStudents.length === 0 && <tr><td className="no-students" colSpan="5">Tidak ada siswa yang cocok dengan pencarian.</td></tr>}
+                    {!loadingDashboard && filteredStudents.length === 0 && <tr><td className="no-students" colSpan="5">{search ? 'Tidak ada siswa yang cocok dengan pencarian.' : 'Belum ada siswa yang ditugaskan ke kelas Anda.'}</td></tr>}
+                    {loadingDashboard && <tr><td className="no-students" colSpan="5">Memuat data siswa...</td></tr>}
                   </tbody>
                 </table>
               </div>
@@ -232,12 +273,10 @@ function TeacherDashboardPage({ onLogout }) {
 
             <div className="teacher-side-panels">
               <article className="teacher-panel subject-panel">
-                <div className="teacher-panel-heading"><div><h2>Status Pengisian Mapel IV A</h2></div></div>
+                <div className="teacher-panel-heading"><div><h2>Mata Pelajaran Ditugaskan</h2></div></div>
                 <div className="subject-statuses">
-                  <SubjectStatus name="Pendidikan Pancasila" status="100% selesai" complete />
-                  <SubjectStatus name="Bahasa Indonesia" status="100% selesai" complete />
-                  <SubjectStatus name="Matematika" status="100% selesai" complete />
-                  <SubjectStatus name="Pendidikan Jasmani" status="Menunggu guru" />
+                {dashboardData?.subjects?.map((subject) => <SubjectStatus key={subject.id_mapel} name={subject.nama_mapel} status="Ditugaskan" complete />)}
+                {!loadingDashboard && !dashboardData?.subjects?.length && <p className="teacher-empty-state">Belum ada mata pelajaran yang ditugaskan.</p>}
                 </div>
               </article>
               <article className="teacher-guide">
@@ -253,6 +292,15 @@ function TeacherDashboardPage({ onLogout }) {
               module={activePage}
               search={search}
               onNotice={showNotice}
+              registered={dashboardData?.profile?.registered}
+              hasStudents={Boolean(dashboardData?.students?.length)}
+              students={dashboardData?.students || []}
+              dashboardData={dashboardData}
+              initialNisn={targetStudentNisn}
+              loading={loadingDashboard}
+              onOpenGradebook={openGradebook}
+              onOpenCorrection={openCorrection}
+              onSelectPage={selectPage}
             />
           )}
         </div>
@@ -271,13 +319,11 @@ function MetricCard({ title, value, detail, icon, tone }) {
   )
 }
 
-function ScheduleCard({ time, subject, topic, active = false }) {
+function ScheduleCard({ time, subject, topic }) {
   return (
-    <article className={`schedule-card${active ? ' is-active' : ''}`}>
+    <article className="schedule-card">
       <div className="schedule-time">{time}</div>
-      {active && <span className="schedule-active-tag">Aktif</span>}
       <h3>{subject}</h3><p>{topic}</p>
-      <div className="schedule-attendance"><Icon name="users" size={13} />32/32 siswa hadir</div>
     </article>
   )
 }

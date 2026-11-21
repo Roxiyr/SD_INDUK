@@ -24,8 +24,38 @@ const data = {
   ],
 }
 
-function RaporHasilBelajar(props) {
-  return <StudentDataPage {...props} data={data} />
+function RaporHasilBelajar({ dashboardData, ...props }) {
+  const grades = dashboardData?.grades || []
+  const average = dashboardData?.metrics?.average
+  const reportStatus = dashboardData?.reportStatus || 'Belum ada rapor'
+  const description = dashboardData?.report && dashboardData?.reportStatus === 'Diajukan'
+    ? `Rapor terbaru menunggu verifikasi; nilai yang tampil tetap berasal dari rapor ${dashboardData.report.semester} ${dashboardData.report.tahun_pelajaran} yang sudah disetujui.`
+    : dashboardData?.report
+      ? `Rapor ${dashboardData.report.semester} ${dashboardData.report.tahun_pelajaran} sudah disetujui operator.`
+    : reportStatus === 'Diajukan'
+      ? 'Rapor sedang menunggu verifikasi operator. Nilai akan tampil setelah rapor disetujui.'
+      : ['Perlu Revisi', 'Ditolak'].includes(reportStatus)
+        ? 'Rapor sedang diperbaiki guru sebelum dapat ditampilkan.'
+        : 'Nilai rapor akan tampil di sini setelah disetujui operator.'
+  const liveData = {
+    ...data,
+    description,
+    stats: [
+      ['Rata-rata semester', average == null ? '—' : Number(average).toLocaleString('id-ID', { maximumFractionDigits: 1 }), 'Berdasarkan nilai tersimpan', 'clipboard'],
+      ['Mata pelajaran', grades.length, 'Pada rapor semester aktif', 'activity'],
+      ['Kelas', dashboardData?.classPlacement?.nama_kelas || '—', dashboardData?.academicYear?.nama_tahun_ajaran || 'Tahun ajaran aktif', 'clipboard'],
+      ['Kehadiran', dashboardData?.metrics?.attendanceRate == null ? '—' : `${dashboardData.metrics.attendanceRate}%`, 'Tahun ajaran aktif', 'shield'],
+    ],
+    rows: grades.map((grade, index) => [
+      String(index + 1).padStart(2, '0'),
+      { initial: grade.nama_mapel?.charAt(0) || 'M', label: grade.nama_mapel },
+      '—',
+      '—',
+      grade.nilai_akhir == null ? 'Belum dinilai' : String(grade.nilai_akhir),
+      { status: grade.nilai_akhir == null ? 'Belum dinilai' : 'Tersimpan' },
+    ]),
+  }
+  return <StudentDataPage {...props} data={liveData} />
 }
 
 export default RaporHasilBelajar

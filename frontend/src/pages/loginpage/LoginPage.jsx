@@ -1,18 +1,41 @@
 import { useState } from 'react'
 import schoolCampus from '../../assets/school-campus.png'
 import schoolEmblem from '../../assets/school-emblem.png'
+import { login } from '../../services/auth/authService.js'
 import './LoginPage.css'
 
 function LoginPage({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false)
   const [message, setMessage] = useState('')
   const [selectedRole, setSelectedRole] = useState('operator')
+  const [isLoading, setIsLoading] = useState(false)
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
     setMessage('')
+    setIsLoading(true)
 
-    onLogin(selectedRole)
+    const form = new FormData(event.currentTarget)
+    try {
+      const result = await login(form.get('username'), form.get('password'))
+      const roleMap = { OPERATOR: 'operator', GURU: 'teacher', SISWA: 'student' }
+      const backendRole = roleMap[result.user.role]
+
+      if (!backendRole) {
+        throw new Error('Peran akun tidak dikenali oleh aplikasi.')
+      }
+      if (backendRole !== selectedRole) {
+        throw new Error(`Akun ini berperan sebagai ${result.user.role}. Pilih peran yang sesuai.`)
+      }
+
+      sessionStorage.setItem('sd-induk.token', result.token)
+      sessionStorage.setItem('sd-induk.user', JSON.stringify(result.user))
+      onLogin(backendRole)
+    } catch (error) {
+      setMessage(error.message || 'Tidak dapat terhubung ke server autentikasi.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -87,7 +110,7 @@ function LoginPage({ onLogin }) {
 
               <div className="security-notice" role="note">
                 <span className="lock-symbol" aria-hidden="true">♙</span>
-                <p><strong>Mode pratinjau</strong><span>Autentikasi server belum tersedia. Akun belum diverifikasi.</span></p>
+                <p><strong>Autentikasi terintegrasi</strong><span>Akun diverifikasi melalui server backend.</span></p>
               </div>
 
               <form className="login-form" onSubmit={handleSubmit}>
@@ -137,8 +160,8 @@ function LoginPage({ onLogin }) {
                   <button className="text-button" type="button" onClick={() => setMessage('Untuk mengatur ulang kata sandi, silakan hubungi administrator sekolah.')}>Lupa kata sandi?</button>
                 </div>
 
-                <button className="submit-button" type="submit">
-                  {selectedRole === 'operator' ? 'Masuk ke Dashboard Operator' : `Masuk sebagai ${selectedRole === 'teacher' ? 'Guru' : 'Murid'}`}
+                <button className="submit-button" type="submit" disabled={isLoading}>
+                  {isLoading ? 'Memverifikasi...' : selectedRole === 'operator' ? 'Masuk ke Dashboard Operator' : `Masuk sebagai ${selectedRole === 'teacher' ? 'Guru' : 'Murid'}`}
                   <span aria-hidden="true">→</span>
                 </button>
                 {message && <p className="form-message" role="status">{message}</p>}

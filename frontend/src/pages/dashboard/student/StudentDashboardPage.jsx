@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import schoolEmblem from '../../../assets/school-emblem.png'
 import useSessionState from '../../../hooks/useSessionState.js'
+import { getStudentDashboard } from '../../../services/dashboard/dashboardService.js'
+import { apiRequest } from '../../../services/apiClient.js'
 import StudentScreens from './screens/StudentScreens.jsx'
 import './StudentDashboardPage.css'
 
@@ -26,15 +28,6 @@ const navigationGroups = [
     label: 'Pengaturan',
     items: [{ label: 'Keamanan & Akun', icon: 'shield', tab: 'Keamanan & Akun' }],
   },
-]
-
-const subjects = [
-  { name: 'Pendidikan Agama & Budi Pekerti', teacher: 'Ahmad Hidayat, S.Ag', grade: '92' },
-  { name: 'Pendidikan Pancasila', teacher: 'Sri Wahyuni, M.Pd', grade: '90' },
-  { name: 'Bahasa Indonesia', teacher: 'Sri Wahyuni, M.Pd', grade: '88' },
-  { name: 'Matematika', teacher: 'Sri Wahyuni, M.Pd', grade: '94' },
-  { name: 'Ilmu Pengetahuan Alam dan Sosial', teacher: 'Sri Wahyuni, M.Pd', grade: '89' },
-  { name: 'Seni Rupa & Prakarya', teacher: 'Dewi Lestari, S.Pd', grade: '87' },
 ]
 
 const tabs = ['Nilai & Hasil Belajar', 'Biodata Pribadi Saya', 'Unggah Dokumen', 'Jadwal Pelajaran']
@@ -66,6 +59,24 @@ function StudentDashboardPage({ onLogout }) {
   const [search, setSearch] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [notice, setNotice] = useState('')
+  const [dashboardData, setDashboardData] = useState(null)
+  const [loadingDashboard, setLoadingDashboard] = useState(true)
+  const [dashboardError, setDashboardError] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+    getStudentDashboard()
+      .then((result) => {
+        if (!cancelled) setDashboardData(result)
+      })
+      .catch((error) => {
+        if (!cancelled) setDashboardError(error.message)
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingDashboard(false)
+      })
+    return () => { cancelled = true }
+  }, [])
 
   function selectTab(tab) {
     setActiveTab(tab)
@@ -73,16 +84,45 @@ function StudentDashboardPage({ onLogout }) {
     setNotice('')
   }
 
-  const filteredSubjects = subjects.filter((subject) =>
-    `${subject.name} ${subject.teacher}`.toLowerCase().includes(search.toLowerCase()),
+  const profile = dashboardData?.profile
+  const grades = dashboardData?.grades || []
+  const classPlacement = dashboardData?.classPlacement
+  const academicYear = dashboardData?.academicYear?.nama_tahun_ajaran || 'Tahun ajaran belum aktif'
+  const studentName = profile?.nama_lengkap || 'Data profil belum tersedia'
+  const initials = studentName.split(/\s+/).slice(0, 2).map((part) => part[0] || '').join('').toUpperCase()
+  const schoolName = dashboardData?.school?.nama_sekolah || 'Profil sekolah belum diatur'
+  const profileFields = profile
+    ? [profile.nisn, profile.nis, profile.nama_lengkap, profile.tanggal_lahir, profile.alamat, profile.nomor_telepon, profile.nama_ayah, profile.nama_ibu]
+    : []
+  const profileCompletion = profileFields.length
+    ? Math.round((profileFields.filter(Boolean).length / profileFields.length) * 100)
+    : 0
+  const filteredGrades = grades.filter((grade) =>
+    `${grade.nama_mapel} ${grade.kategori_mapel}`.toLowerCase().includes(search.toLowerCase()),
   )
+
+  async function downloadReport() {
+    try {
+      const response = await apiRequest('/portal/cetak-pdf')
+      const url = URL.createObjectURL(await response.blob())
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `buku-induk-${profile?.nisn || 'siswa'}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      setDashboardError(error.message)
+    }
+  }
 
   return (
     <div className="student-app">
       <aside className={`student-sidebar${sidebarOpen ? ' is-open' : ''}`}>
         <div className="student-brand">
           <div className="student-brand-emblem"><img src={schoolEmblem} alt="" /></div>
-          <div className="student-brand-copy"><strong>SDN BATU AMPAR 12 PAGI</strong><span>BUKU INDUK DIGITAL</span></div>
+          <div className="student-brand-copy"><strong>{schoolName}</strong><span>BUKU INDUK DIGITAL</span></div>
         </div>
 
         <div className="student-role-switcher" aria-label="Peran aktif">
@@ -109,7 +149,7 @@ function StudentDashboardPage({ onLogout }) {
         </nav>
 
         <div className="student-account">
-          <div className="student-profile"><span className="student-profile-avatar">AF</span><span><strong>Ahmad Fauzi Ridwan</strong><small>Siswa Kelas IV A</small></span></div>
+          <div className="student-profile"><span className="student-profile-avatar">{initials}</span><span><strong>{studentName}</strong><small>{classPlacement?.nama_kelas || 'Kelas belum ditetapkan'}</small></span></div>
           <button type="button" className="student-logout" onClick={onLogout} aria-label="Keluar">⇥</button>
         </div>
       </aside>
@@ -120,41 +160,42 @@ function StudentDashboardPage({ onLogout }) {
         <header className="student-topbar">
           <div className="student-breadcrumb">
             <button type="button" className="student-mobile-menu" onClick={() => setSidebarOpen(true)} aria-label="Buka navigasi">☰</button>
-            <Icon name="book" size={16} /><span>{activeTab === 'Beranda Siswa' ? 'Buku Induk' : activeTab}</span><span className="student-breadcrumb-divider">/</span><span className="student-term-badge">T.A. 2025/2026 Ganjil</span>
+            <Icon name="book" size={16} /><span>{activeTab === 'Beranda Siswa' ? 'Buku Induk' : activeTab}</span><span className="student-breadcrumb-divider">/</span>            <span className="student-term-badge">{academicYear}</span>
           </div>
-          <label className="student-search"><Icon name="search" size={17} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari NIS, nama siswa, NISN..." aria-label="Cari nilai" /><kbd>⌘ K</kbd></label>
+          <label className="student-search"><Icon name="search" size={17} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari mata pelajaran..." aria-label="Cari nilai" /><kbd>⌘ K</kbd></label>
           <div className="student-topbar-actions">
-            <span className="student-sync"><i />Dapodik: 10:45 WIB</span>
+            <span className="student-sync"><i />{loadingDashboard ? 'Memuat data...' : dashboardData ? 'Terhubung ke database' : 'Data tidak tersedia'}</span>
             <button type="button" className="student-icon-button" aria-label="Notifikasi" onClick={() => setNotice('Tidak ada notifikasi baru.')}><Icon name="bell" /><i /></button>
             <button type="button" className="student-topbar-avatar" aria-label="Profil siswa" onClick={() => selectTab('Biodata Pribadi Saya')}><Icon name="user" /></button>
           </div>
         </header>
 
         <div className="student-content">
+          {dashboardError && <div className="student-notice" role="alert">{dashboardError}</div>}
           {notice && <div className="student-notice" role="status">{notice}<button type="button" onClick={() => setNotice('')} aria-label="Tutup">×</button></div>}
           {activeTab === 'Beranda Siswa' ? (
             <>
               <section className="student-welcome">
                 <div className="student-welcome-main">
-                  <div className="student-welcome-avatar">AF</div>
+                  <div className="student-welcome-avatar">{initials}</div>
                   <div className="student-welcome-copy">
-                    <div className="student-tags"><span>SISWA AKTIF</span><span>KELAS IV A - FASE B</span></div>
-                    <h1>Halo, Ahmad Fauzi Ridwan</h1>
-                    <p>NISN 0087654321 · SDN Batu Ampar 12 Pagi · Wali Kelas Dra. Sri Wahyuni, M.Pd</p>
+                    <div className="student-tags"><span>{profile?.status_siswa || 'Status belum tersedia'}</span><span>{classPlacement ? `${classPlacement.nama_kelas} · Fase ${classPlacement.fase}` : 'Kelas belum ditetapkan'}</span></div>
+                    <h1>Halo, {studentName}</h1>
+                    <p>NISN {profile?.nisn || '—'} · {schoolName} · Wali kelas {classPlacement?.wali_kelas || 'belum ditetapkan'}</p>
                   </div>
                 </div>
                 <div className="student-welcome-actions">
-                  <button type="button" onClick={() => setNotice('Rekap nilai semester siap diunduh.')}><Icon name="download" size={15} />Unduh rekap nilai</button>
+                  <button type="button" onClick={downloadReport}><Icon name="download" size={15} />Unduh rekap nilai</button>
                   <button type="button" className="student-report-button" onClick={() => selectTab('Transkrip Saya')}><Icon name="book" size={15} />Lihat rapor digital</button>
                 </div>
-                <div className="student-announcement"><Icon name="bell" size={15} /><strong>Pengumuman penting</strong><span>Pengumpulan berkas ijazah TK dan kartu keluarga terakhir tanggal 25 Juni 2025.</span></div>
+                <div className="student-announcement"><Icon name="bell" size={15} /><strong>{dashboardData?.announcements?.[0]?.jenis || 'Informasi sekolah'}</strong><span>{dashboardData?.announcements?.[0]?.judul || 'Belum ada pengumuman untuk siswa.'}</span></div>
               </section>
 
               <section className="student-metrics" aria-label="Ringkasan akademik siswa">
-                <MetricCard title="Rata-rata nilai semester" value="89,4" detail="Sangat baik · Peringkat 3" icon="trend" tone="red" />
-                <MetricCard title="Kelengkapan biodata" value="100%" detail="Seluruh data terverifikasi" icon="clipboard" tone="blue" />
-                <MetricCard title="Tingkat presensi" value="98,2%" detail="Hadir 108 dari 110 hari" icon="activity" tone="purple" />
-                <MetricCard title="Status buku induk" value="Aktif" detail="Terakhir diperbarui hari ini" icon="shield" tone="orange" />
+                <MetricCard title="Rata-rata nilai" value={dashboardData?.metrics?.average == null ? '—' : Number(dashboardData.metrics.average).toLocaleString('id-ID', { maximumFractionDigits: 1 })} detail={dashboardData?.report ? `${dashboardData.report.semester} ${dashboardData.report.tahun_pelajaran}` : dashboardData?.reportStatus || 'Belum ada rapor'} icon="trend" tone="red" />
+                <MetricCard title="Kelengkapan biodata" value={profile ? `${profileCompletion}%` : '—'} detail={`${profileFields.filter(Boolean).length}/${profileFields.length} data utama terisi`} icon="clipboard" tone="blue" />
+                <MetricCard title="Tingkat presensi" value={dashboardData?.metrics?.attendanceRate == null ? '—' : `${dashboardData.metrics.attendanceRate}%`} detail={`${dashboardData?.metrics?.attendancePresent ?? 0} hadir dari ${dashboardData?.metrics?.attendanceTotal ?? 0} hari`} icon="activity" tone="purple" />
+                <MetricCard title="Status buku induk" value={profile?.status_siswa || '—'} detail={dashboardData?.metrics?.documents ? `${dashboardData.metrics.verifiedDocuments}/${dashboardData.metrics.documents} dokumen terverifikasi` : 'Belum ada dokumen tercatat'} icon="shield" tone="orange" />
               </section>
 
               <nav className="student-tabs" aria-label="Bagian dashboard siswa">
@@ -164,37 +205,38 @@ function StudentDashboardPage({ onLogout }) {
               <div className="student-dashboard-grid">
                   <section className="student-panel student-grade-panel">
                     <div className="student-panel-heading">
-                      <div><h2>Transkrip Nilai Semester Berjalan</h2><p>Kurikulum Merdeka · Kelas IV A · Semester Ganjil</p></div>
-                      <span className="student-kktp-badge">KKTP minimum 75</span>
+                      <div><h2>Transkrip Nilai Semester Berjalan</h2><p>{classPlacement?.nama_kelas || 'Kelas belum ditetapkan'} · {dashboardData?.report ? `${dashboardData.report.semester} ${dashboardData.report.tahun_pelajaran}` : academicYear}</p></div>
+                      <span className="student-kktp-badge">{dashboardData?.report ? 'Rapor disetujui' : dashboardData?.reportStatus || 'Belum ada rapor'}</span>
                     </div>
                     <div className="student-table-wrap">
                       <table className="student-grade-table">
-                        <thead><tr><th>No</th><th>Mata Pelajaran</th><th>Guru</th><th>Nilai Akhir</th><th>Status</th><th>Detail</th></tr></thead>
-                        <tbody>{filteredSubjects.map((subject) => (
-                          <tr key={subject.name}>
-                            <td>{String(subjects.indexOf(subject) + 1).padStart(2, '0')}</td><td className="student-subject-name">{subject.name}</td><td>{subject.teacher}</td><td className="student-grade">{subject.grade}</td><td><span className="student-pass-badge">Tuntas</span></td><td><button type="button" className="student-detail-link" onClick={() => setNotice(`Capaian pembelajaran ${subject.name} telah tuntas.`)}>Lihat capaian</button></td>
+                        <thead><tr><th>No</th><th>Mata Pelajaran</th><th>Kategori</th><th>Nilai Akhir</th><th>Status</th><th>Detail</th></tr></thead>
+                        <tbody>{filteredGrades.map((grade, index) => (
+                          <tr key={`${grade.nama_mapel}-${grade.kategori_mapel}`}>
+                            <td>{String(index + 1).padStart(2, '0')}</td><td className="student-subject-name">{grade.nama_mapel}</td><td>{grade.kategori_mapel}</td><td className="student-grade">{formatScore(grade.nilai_akhir)}</td><td><span className="student-pass-badge">{grade.nilai_akhir == null ? 'Belum dinilai' : 'Tersimpan'}</span></td><td><button type="button" className="student-detail-link" onClick={() => setNotice(grade.capaian_kompetensi || `Belum ada catatan capaian untuk ${grade.nama_mapel}.`)}>Lihat capaian</button></td>
                           </tr>
-                        ))}{filteredSubjects.length === 0 && <tr><td className="student-empty-row" colSpan="6">Mata pelajaran tidak ditemukan.</td></tr>}</tbody>
+                        ))}{!loadingDashboard && filteredGrades.length === 0 && <tr><td className="student-empty-row" colSpan="6">{search ? 'Mata pelajaran tidak ditemukan.' : 'Belum ada nilai rapor yang tersimpan.'}</td></tr>}{loadingDashboard && <tr><td className="student-empty-row" colSpan="6">Memuat nilai...</td></tr>}                        </tbody>
                       </table>
                     </div>
-                    <div className="student-grade-footer"><span>Total beban: 7 mata pelajaran · Status kelulusan: 100% tuntas</span><button type="button" onClick={() => selectTab('Transkrip Saya')}>Buka transkrip lengkap →</button></div>
+                    <div className="student-grade-footer"><span>{grades.length} mata pelajaran · {dashboardData?.report?.keputusan_akhir || 'Belum ada keputusan rapor'}</span><button type="button" onClick={() => selectTab('Transkrip Saya')}>Buka transkrip lengkap →</button></div>
                   </section>
 
                   <aside className="student-side-panels">
                     <section className="student-panel student-data-panel">
-                      <div className="student-panel-heading"><div><h2>Pembaruan Data Diri</h2><p>Pemeriksaan mandiri buku induk</p></div><span className="student-complete-badge">Lengkap</span></div>
+                      <div className="student-panel-heading"><div><h2>Pembaruan Data Diri</h2><p>Pemeriksaan mandiri buku induk</p></div><span className="student-complete-badge">{profile ? `${profileCompletion}%` : '—'}</span></div>
                       <div className="student-data-list">
-                        <div><strong>Alamat domisili</strong><span>Diperbarui 12 Juni 2025</span></div>
-                        <div><strong>Nomor kontak wali</strong><span>Terverifikasi</span></div>
-                        <div><strong>Dokumen keluarga</strong><span>KK dan akta lengkap</span></div>
+                        <div><strong>Alamat domisili</strong><span>{profile?.alamat || 'Belum diisi'}</span></div>
+                        <div><strong>Nomor telepon siswa</strong><span>{profile?.nomor_telepon || 'Belum diisi'}</span></div>
+                        <div><strong>Dokumen keluarga</strong><span>{dashboardData?.metrics?.verifiedDocuments || 0} terverifikasi dari {dashboardData?.metrics?.documents || 0}</span></div>
                       </div>
                       <button type="button" className="student-update-button" onClick={() => selectTab('Biodata Pribadi Saya')}><Icon name="refresh" size={15} />Perbarui data kontak</button>
                     </section>
                     <section className="student-panel student-agenda-panel">
                       <h2>Agenda Penting Siswa</h2>
-                      <AgendaItem day="22" title="Asesmen Sumatif Tengah Semester" />
-                      <AgendaItem day="25" title="Batas pengumpulan dokumen" />
-                      <AgendaItem day="28" title="Pembagian rapor semester" />
+                      {dashboardData?.announcements?.map((announcement) => (
+                        <AgendaItem key={announcement.id_informasi} day={formatAgendaDate(announcement.mulai_pada)} title={announcement.judul} detail={announcement.jenis || announcement.isi} />
+                      ))}
+                      {!loadingDashboard && !dashboardData?.announcements?.length && <p className="student-empty-state">Belum ada agenda untuk siswa.</p>}
                     </section>
                   </aside>
               </div>
@@ -206,7 +248,17 @@ function StudentDashboardPage({ onLogout }) {
               </section>
             </>
           ) : (
-            <StudentScreens module={activeTab} search={search} onNotice={setNotice} />
+            <StudentScreens
+              module={activeTab}
+              search={search}
+              onNotice={setNotice}
+              onNavigate={selectTab}
+              onDownloadReport={downloadReport}
+              hasProfile={Boolean(profile)}
+              profile={profile}
+              dashboardData={dashboardData}
+              loading={loadingDashboard}
+            />
           )}
         </div>
       </main>
@@ -219,8 +271,18 @@ function MetricCard({ title, value, detail, icon, tone }) {
   return <article className="student-metric-card"><div><h2>{title}</h2><strong>{value}</strong><p>{detail}</p></div><span className={`student-metric-icon ${tone}`}><Icon name={icon} size={17} /></span></article>
 }
 
-function AgendaItem({ day, title }) {
-  return <div className="student-agenda-item"><span>{day}</span><div><strong>{title}</strong><small>Kelas IV A · SDN Batu Ampar 12 Pagi</small></div></div>
+function AgendaItem({ day, title, detail }) {
+  return <div className="student-agenda-item"><span>{day}</span><div><strong>{title}</strong><small>{detail}</small></div></div>
+}
+
+function formatScore(value) {
+  return value == null ? '—' : Number(value).toLocaleString('id-ID', { maximumFractionDigits: 1 })
+}
+
+function formatAgendaDate(value) {
+  if (!value) return 'Info'
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? 'Info' : date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' })
 }
 
 export default StudentDashboardPage

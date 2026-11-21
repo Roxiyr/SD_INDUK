@@ -20,13 +20,49 @@ const screens = {
   'Profil Guru & Akun': ProfilGuruAkun,
 }
 
-function TeacherScreens({ module, search, onNotice }) {
+function TeacherScreens({ module, search, onNotice, registered, hasStudents, students = [], dashboardData, initialNisn, loading, onOpenGradebook, onOpenCorrection, onSelectPage }) {
   const Screen = screens[module]
   if (!Screen) {
     return <section className="teacher-module-screen"><div className="teacher-module-heading"><h1>Halaman tidak ditemukan</h1></div></section>
   }
 
-  return <Screen module={module} search={search} onNotice={onNotice} />
+  const canShowWithoutStudents = ['Jadwal Mengajar', 'Profil Guru & Akun'].includes(module)
+  if (!registered || (!hasStudents && !canShowWithoutStudents)) {
+    const heading = loading
+      ? 'Memuat data guru...'
+      : !registered
+        ? 'Data guru belum diisi'
+        : 'Belum ada siswa yang ditugaskan'
+    const description = loading
+      ? 'Mengambil data dari database.'
+      : !registered
+        ? 'Halaman ini akan menampilkan data setelah operator menambahkan profil guru.'
+        : 'Tampilan akademik akan tersedia setelah operator memasukkan dan menugaskan data siswa ke kelas.'
+    return (
+      <section className="teacher-module-screen teacher-empty-module" role={loading ? 'status' : 'region'}>
+        <div className="teacher-module-heading">
+          <div>
+            <h1>{heading}</h1>
+            <p>{description}</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  return (
+    <Screen
+      module={module}
+      search={search}
+      onNotice={onNotice}
+      students={students}
+      dashboardData={dashboardData}
+      initialNisn={initialNisn}
+      onOpenGradebook={onOpenGradebook}
+      onOpenCorrection={onOpenCorrection}
+      onSelectPage={onSelectPage}
+    />
+  )
 }
 
 export default TeacherScreens

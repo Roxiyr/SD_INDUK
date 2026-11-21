@@ -1,0 +1,21 @@
+.print-book-layout { display: grid; grid-template-columns: 330px minmax(0, 1fr); gap: 16px; }
+.print-book-list, .print-book-preview { background: #fff; border: 1px solid #e6ebf2; border-radius: 18px; box-shadow: 0 2px 4px #17233a08; }
+.print-book-list { max-height: 520px; display: flex; flex-direction: column; gap: 12px; padding: 14px; }
+.print-book-list .table-search { width: 100%; }
+.print-book-students { overflow-y: auto; display: flex; flex-direction: column; gap: 7px; }
+.print-book-students > p { color: #91a0b5; font-size: 10px; text-align: center; }
+.print-book-students button { display: flex; align-items: center; gap: 10px; padding: 9px; color: #52617a; background: #fff; border: 1px solid #e8edf3; border-radius: 10px; text-align: left; }
+.print-book-students button.active { background: #fff4f5; border-color: #efccd0; }
+.print-book-students button > span { width: 34px; height: 34px; display: grid; place-items: center; flex: 0 0 auto; color: #bd111b; background: #fff0f1; border-radius: 9px; font-size: 9px; font-weight: 700; }
+.print-book-students button div { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.print-book-students strong { overflow: hidden; color: #27344a; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.print-book-students small { color: #91a0b5; font-size: 8px; }
+.print-book-preview { min-height: 520px; display: flex; align-items: center; flex-direction: column; justify-content: center; gap: 20px; padding: 26px; }
+.print-book-cover { width: min(340px, 100%); min-height: 390px; display: flex; align-items: center; flex-direction: column; justify-content: center; padding: 30px; background: linear-gradient(145deg, #fff, #faf4f4); border: 8px solid #f5e7e8; outline: 1px solid #dcc8ca; text-align: center; box-shadow: 0 10px 30px #17233a12; }
+.print-book-mark { width: 64px; height: 64px; display: grid; place-items: center; margin-bottom: 18px; color: #fff; background: #bd111b; border-radius: 18px; }
+.print-book-kicker { color: #bd111b; font-size: 9px; font-weight: 800; letter-spacing: 1.5px; }
+.print-book-cover h2 { margin: 13px 0 8px; color: #26344b; font-size: 18px; }
+.print-book-cover p { max-width: 230px; margin: 0; color: #8492a8; font-size: 10px; line-height: 1.7; }
+.print-book-preview .module-primary-button { min-height: 40px; }
+.print-book-error { margin-bottom: 12px; padding: 11px 13px; color: #a20d18; background: #fff1f2; border-radius: 9px; font-size: 11px; }
+@media (max-width: 760px) { .print-book-layout { grid-template-columns: 1fr; } .print-book-list { max-height: 310px; } .print-book-preview { min-height: 430px; } .print-book-cover { min-height: 320px; } }

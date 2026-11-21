@@ -1,0 +1,3 @@
+const router = require('express').Router(); const auth = require('../middlewares/authMiddleware'); const { authorizeRoles } = require('../middlewares/roleMiddleware'); const { asyncHandler } = require('../utils/http'); const c = require('../controllers/portalController'); const pdf = require('../controllers/pdfController');
+router.use(auth, authorizeRoles('SISWA')); router.get('/dashboard', asyncHandler(require('../controllers/dashboardController').student)); router.get('/profil', asyncHandler(c.profile)); router.get('/rapor', asyncHandler(c.report)); router.get('/cetak-pdf', asyncHandler(pdf.renderBook));
+module.exports = router;

@@ -19,13 +19,29 @@ const screens = {
   'Keamanan & Akun': KeamananAkun,
 }
 
-function StudentScreens({ module, search, onNotice }) {
+function StudentScreens({ module, search, onNotice, onNavigate, onDownloadReport, hasProfile, profile, dashboardData, loading }) {
   const Screen = screens[module]
   if (!Screen) {
     return <section className="student-section-panel"><h1>Halaman tidak ditemukan</h1></section>
   }
 
-  return <Screen search={search} onNotice={onNotice} />
+  if (!hasProfile) {
+    return (
+      <section className="student-section-panel" role={loading ? 'status' : 'region'}>
+        <h1>{loading ? 'Memuat data siswa...' : 'Data siswa belum diisi'}</h1>
+        <p>{loading ? 'Mengambil data dari database.' : 'Halaman ini akan tersedia setelah operator mengisi profil siswa.'}</p>
+      </section>
+    )
+  }
+
+  return <Screen
+    search={search}
+    onNotice={onNotice}
+    onNavigate={onNavigate}
+    onDownloadReport={onDownloadReport}
+    profile={profile}
+    dashboardData={dashboardData}
+  />
 }
 
 export default StudentScreens

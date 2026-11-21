@@ -1,0 +1,12 @@
+const router = require('express').Router(); const c = require('../controllers/raporController'); const auth = require('../middlewares/authMiddleware'); const { authorizeRoles } = require('../middlewares/roleMiddleware'); const { asyncHandler } = require('../utils/http');
+router.use(auth, authorizeRoles('OPERATOR','GURU')); router.get('/siswa/:nisn', asyncHandler(c.listByStudent));
+router.get('/verifikasi', authorizeRoles('OPERATOR'), asyncHandler(c.listPendingVerification));
+router.get('/disetujui', authorizeRoles('OPERATOR'), asyncHandler(c.listApprovedReports));
+router.get('/kelas/:id_kelas', asyncHandler(c.listClassReports));
+router.get('/:id_rapor', asyncHandler(c.detail)); router.post('/', asyncHandler(c.create)); router.put('/:id_rapor', asyncHandler(c.update));
+router.post('/:id_rapor/mapel', asyncHandler((req,res)=>c.saveItems(req,res,'mapel'))); router.post('/:id_rapor/p5', asyncHandler((req,res)=>c.saveItems(req,res,'p5'))); router.post('/:id_rapor/ekskul', asyncHandler((req,res)=>c.saveItems(req,res,'ekskul')));
+router.post('/:id_rapor/ajukan', authorizeRoles('GURU'), asyncHandler(c.submitForVerification));
+router.post('/:id_rapor/buka-revisi', authorizeRoles('OPERATOR'), asyncHandler(c.reopenApprovedForRevision));
+router.put('/:id_rapor/verifikasi', authorizeRoles('OPERATOR'), asyncHandler(c.reviewVerification));
+router.delete('/:id_rapor/:type/:id_item', asyncHandler(c.removeItem));
+module.exports = router;

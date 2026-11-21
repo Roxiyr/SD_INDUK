@@ -23,8 +23,36 @@ const data = {
   ],
 }
 
-function BiodataSiswa(props) {
-  return <StudentDataPage {...props} data={data} />
+function BiodataSiswa({ profile, ...props }) {
+  const updated = profile?.updated_at ? String(profile.updated_at).slice(0, 10) : '—'
+  const fields = [
+    ['Nama lengkap', profile?.nama_lengkap],
+    ['NISN', profile?.nisn],
+    ['NIS', profile?.nis],
+    ['Tempat, tanggal lahir', [profile?.tempat_lahir, profile?.tanggal_lahir].filter(Boolean).join(', ')],
+    ['Jenis kelamin', profile?.jenis_kelamin === 'L' ? 'Laki-laki' : profile?.jenis_kelamin === 'P' ? 'Perempuan' : '—'],
+    ['Agama', profile?.agama],
+    ['Alamat', profile?.alamat],
+    ['Nomor telepon', profile?.nomor_telepon],
+  ]
+  const liveData = {
+    ...data,
+    stats: [
+      ['Data identitas', fields.filter(([, value]) => value).length, 'Field yang tersimpan', 'user'],
+      ['Status siswa', profile?.status_siswa || '—', 'Dari buku induk', 'activity'],
+      ['Diperbarui', updated, 'Tanggal data terakhir berubah', 'clipboard'],
+      ['NISN', profile?.nisn || '—', 'Identitas siswa', 'shield'],
+    ],
+    rows: fields.map(([label, value], index) => [
+      String(index + 1).padStart(2, '0'),
+      { initial: label.charAt(0), label },
+      value || 'Belum diisi',
+      'Buku induk sekolah',
+      updated,
+      { status: value ? 'Tersimpan' : 'Belum diisi' },
+    ]),
+  }
+  return <StudentDataPage {...props} data={liveData} />
 }
 
 export default BiodataSiswa

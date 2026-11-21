@@ -1,4 +1,9 @@
-.teacher-student-list .teacher-module-table th:nth-child(3) { min-width: 90px; }
-.teacher-student-list .teacher-module-table th:nth-child(4),
-.teacher-student-list .teacher-module-table th:nth-child(5) { min-width: 150px; }
-.teacher-student-list .teacher-module-table td:nth-child(5) { white-space: normal; }
+.teacher-student-list-live .teacher-module-table th:nth-child(2),
+.teacher-student-list-live .teacher-module-table th:nth-child(3),
+.teacher-student-list-live .teacher-module-table th:nth-child(4),
+.teacher-student-list-live .teacher-module-table th:nth-child(5) { min-width: 125px; }
+.teacher-student-list-live .teacher-row-identity > div { display: grid; gap: 4px; }
+.teacher-student-list-live .teacher-row-identity small { color: #8997aa; font-size: 8px; }
+.teacher-student-actions { display: flex; gap: 5px; }
+.teacher-student-actions button { padding: 6px 8px; color: #a90c16; background: #fff7f7; border: 1px solid #f1d8da; border-radius: 7px; font-size: 8px; white-space: nowrap; }
+.teacher-student-actions button + button { color: #526179; background: #fff; border-color: #e2e8f0; }

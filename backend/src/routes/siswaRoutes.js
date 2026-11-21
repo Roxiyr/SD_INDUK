@@ -1,0 +1,5 @@
+const router = require('express').Router(); const multer = require('multer'); const c = require('../controllers/siswaController'); const auth = require('../middlewares/authMiddleware'); const { authorizeRoles } = require('../middlewares/roleMiddleware'); const { asyncHandler } = require('../utils/http');
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: (req,file,cb)=>cb(null, /\.(xlsx|csv)$/i.test(file.originalname)) });
+router.use(auth); router.get('/', authorizeRoles('OPERATOR','GURU'), asyncHandler(c.list)); router.get('/:nisn', authorizeRoles('OPERATOR','GURU'), asyncHandler(c.detail));
+router.post('/', authorizeRoles('OPERATOR'), asyncHandler(c.create)); router.put('/:nisn', authorizeRoles('OPERATOR'), asyncHandler(c.update)); router.post('/:nisn/keluar', authorizeRoles('OPERATOR'), asyncHandler(c.recordExit)); router.post('/import', authorizeRoles('OPERATOR'), upload.single('file'), asyncHandler(c.importStudents)); router.delete('/:nisn', authorizeRoles('OPERATOR'), asyncHandler(c.remove));
+module.exports = router;

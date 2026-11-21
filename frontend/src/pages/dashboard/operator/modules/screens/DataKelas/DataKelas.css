@@ -1,0 +1,21 @@
+.classes-page .module-table { min-width: 1040px; }
+.classes-page .module-table td > strong { display: block; color: #27364d; }
+.class-phase { display: block; margin-top: 3px; color: #8290a5; font-size: 9px; }
+.class-record-error { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; padding: 11px 14px; color: #a1212a; background: #fff0f1; border: 1px solid #f5d2d5; border-radius: 10px; font-size: 11px; }
+.class-record-error button { color: inherit; background: transparent; border: 0; font-size: 17px; }
+.class-record-backdrop { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 18px; background: #101a2d70; }
+.class-record-dialog { width: min(100%, 560px); max-height: 92vh; overflow-y: auto; padding: 22px; background: #fff; border: 1px solid #e6ebf2; border-radius: 18px; box-shadow: 0 24px 80px #101a2d30; }
+.class-record-dialog header { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.class-record-dialog header h2 { margin: 6px 0; color: #182237; font-size: 20px; }
+.class-record-dialog header p { margin: 0; color: #8492a8; font-size: 11px; }
+.class-record-dialog header > button { width: 32px; height: 32px; color: #69788e; background: #f4f6f9; border: 0; border-radius: 9px; font-size: 20px; }
+.class-record-dialog form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+.class-record-dialog form > label { display: flex; flex-direction: column; gap: 6px; color: #526179; font-size: 10px; font-weight: 600; }
+.class-record-dialog input, .class-record-dialog select { min-height: 38px; padding: 8px 10px; color: #27364d; background: #fff; border: 1px solid #e0e6ef; border-radius: 9px; font: inherit; }
+.class-record-dialog input:focus, .class-record-dialog select:focus { outline: 2px solid #c9d6e8; border-color: #9aabc1; }
+.class-record-form-error { grid-column: 1 / -1; margin: 0; color: #a1212a; font-size: 11px; }
+.class-record-dialog footer { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 9px; margin-top: 8px; padding-top: 15px; border-top: 1px solid #edf0f5; }
+@media (max-width: 600px) {
+  .class-record-dialog { padding: 16px; }
+  .class-record-dialog form { grid-template-columns: 1fr; }
+}

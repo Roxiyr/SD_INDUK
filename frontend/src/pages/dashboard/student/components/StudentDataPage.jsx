@@ -29,12 +29,39 @@ function renderCell(value) {
   return value
 }
 
-function StudentDataPage({ data, search = '', onNotice }) {
+function StudentDataPage({ data, search = '', onNotice, onNavigate, onDownloadReport }) {
   const [localSearch, setLocalSearch] = useState('')
+  const [detailRow, setDetailRow] = useState(null)
   const searchTerm = `${search} ${localSearch}`.trim().toLowerCase()
   const filteredRows = data.rows.filter((row) =>
     row.map((cell) => (cell && typeof cell === 'object' ? cell.label || cell.status : cell)).join(' ').toLowerCase().includes(searchTerm),
   )
+
+  function handleAction(action) {
+    if (/ajukan|perubahan data/i.test(action)) {
+      onNavigate?.('Pengajuan Perubahan Data')
+      return
+    }
+    if (/rapor|transkrip/i.test(action) && onDownloadReport) {
+      onDownloadReport()
+      return
+    }
+    const csvRows = [
+      data.columns,
+      ...filteredRows.map((row) => row.map((cell) => {
+        if (cell && typeof cell === 'object') return cell.label || cell.status || ''
+        return cell
+      })),
+    ]
+    const csv = csvRows.map((row) => row.map((cell) => `"${String(cell ?? '').replaceAll('"', '""')}"`).join(',')).join('\r\n')
+    const url = URL.createObjectURL(new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8' }))
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${data.title.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}.csv`
+    link.click()
+    URL.revokeObjectURL(url)
+    onNotice?.(`${filteredRows.length} baris berhasil diekspor.`)
+  }
 
   return (
     <div className={`student-data-page ${data.className || ''}`}>
@@ -46,7 +73,7 @@ function StudentDataPage({ data, search = '', onNotice }) {
         </div>
         <div className="student-page-actions">
           {data.actions.map((action, index) => (
-            <button type="button" className={index === data.actions.length - 1 ? 'primary' : ''} key={action} onClick={() => onNotice(`${action} dipilih. Fitur ini tersedia setelah layanan sekolah terhubung.`)}>
+            <button type="button" className={index === data.actions.length - 1 ? 'primary' : ''} key={action} onClick={() => handleAction(action)}>
               {index === data.actions.length - 1 ? <StudentIcon name="file" size={14} /> : <StudentIcon name="download" size={14} />}
               {action}
             </button>
@@ -75,7 +102,7 @@ function StudentDataPage({ data, search = '', onNotice }) {
               {filteredRows.map((row, rowIndex) => (
                 <tr key={`${data.title}-${rowIndex}`}>
                   {row.map((cell, cellIndex) => <td key={`${rowIndex}-${cellIndex}`}>{renderCell(cell)}</td>)}
-                  <td><button className="student-page-view" type="button" aria-label={`Lihat detail baris ${rowIndex + 1}`} onClick={() => onNotice(`Detail ${data.title.toLowerCase()} dipilih.`)}><StudentIcon name="eye" size={15} /></button></td>
+                  <td><button className="student-page-view" type="button" aria-label={`Lihat detail baris ${rowIndex + 1}`} onClick={() => setDetailRow(row)}><StudentIcon name="eye" size={15} /></button></td>
                 </tr>
               ))}
               {filteredRows.length === 0 && <tr><td className="student-page-empty" colSpan={data.columns.length + 1}>Data tidak ditemukan. Coba kata kunci lain.</td></tr>}
@@ -87,6 +114,19 @@ function StudentDataPage({ data, search = '', onNotice }) {
           <div><button type="button" aria-label="Halaman sebelumnya" disabled>‹</button><strong>1</strong><button type="button" aria-label="Halaman selanjutnya" disabled>›</button></div>
         </footer>
       </section>
+      {detailRow && (
+        <div className="student-page-detail-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setDetailRow(null) }}>
+          <section className="student-page-detail" role="dialog" aria-modal="true" aria-labelledby="student-page-detail-title">
+            <header><h2 id="student-page-detail-title">Detail {data.title}</h2><button type="button" onClick={() => setDetailRow(null)} aria-label="Tutup detail">×</button></header>
+            <dl>{data.columns.map((column, index) => {
+              const cell = detailRow[index]
+              const value = cell && typeof cell === 'object' ? cell.label || cell.status || '' : cell
+              return <div key={column}><dt>{column}</dt><dd>{String(value ?? '—')}</dd></div>
+            })}</dl>
+            <footer><button type="button" onClick={() => setDetailRow(null)}>Tutup</button></footer>
+          </section>
+        </div>
+      )}
     </div>
   )
 }

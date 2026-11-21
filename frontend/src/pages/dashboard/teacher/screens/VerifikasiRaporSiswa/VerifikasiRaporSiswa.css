@@ -1,4 +1,15 @@
-.teacher-report-verification .teacher-module-table th:nth-child(3),
-.teacher-report-verification .teacher-module-table th:nth-child(4),
-.teacher-report-verification .teacher-module-table th:nth-child(5) { min-width: 105px; }
-.teacher-report-verification .teacher-module-table th:nth-child(6) { min-width: 145px; }
+.teacher-verification-toolbar { justify-content: flex-start; flex-wrap: wrap; }
+.teacher-verification-toolbar > label:not(.teacher-table-search) { display: grid; gap: 5px; color: #526179; font-size: 9px; }
+.teacher-verification-toolbar select { min-width: 110px; height: 36px; padding: 0 8px; color: #34425a; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; font: inherit; }
+.teacher-verification-toolbar .teacher-table-search { flex: 1; margin-left: auto; }
+.teacher-verification-list { display: grid; gap: 9px; padding: 14px; }
+.teacher-verification-list > article { display: grid; grid-template-columns: minmax(170px, 1fr) minmax(140px, 1fr) auto; gap: 12px; align-items: center; padding: 12px; border: 1px solid #edf0f5; border-radius: 10px; }
+.teacher-verification-person { min-width: 0; display: flex; align-items: center; gap: 9px; }
+.teacher-verification-person > div { min-width: 0; display: grid; gap: 4px; }
+.teacher-verification-person strong { overflow: hidden; color: #37445a; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.teacher-verification-person small, .teacher-verification-status small { color: #8997aa; font-size: 8px; line-height: 1.5; }
+.teacher-verification-status { display: grid; justify-items: start; gap: 5px; }
+.teacher-verification-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.teacher-verification-actions button { min-height: 31px; padding: 0 9px; font-size: 8px; }
+@media (max-width: 850px) { .teacher-verification-list > article { grid-template-columns: 1fr 1fr; } .teacher-verification-actions { grid-column: 1 / -1; justify-content: flex-start; } }
+@media (max-width: 650px) { .teacher-verification-toolbar .teacher-table-search { min-width: 100%; margin-left: 0; } .teacher-verification-list > article { grid-template-columns: 1fr; } .teacher-verification-actions { grid-column: auto; } }

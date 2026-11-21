@@ -1,0 +1,28 @@
+.data-value-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 16px; align-items: start; }
+.data-value-panel, .data-value-form { background: #fff; border: 1px solid #e6ebf2; border-radius: 18px; box-shadow: 0 2px 4px #17233a08; }
+.data-value-panel { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+.data-value-panel h2 { margin: 8px 0 0; color: #26344b; font-size: 12px; }
+.data-value-field { display: flex; min-width: 0; flex-direction: column; gap: 7px; color: #52617a; font-size: 10px; font-weight: 650; }
+.data-value-field input, .data-value-field select, .data-value-field textarea { width: 100%; min-height: 39px; padding: 0 10px; color: #34425a; background: #fff; border: 1px solid #e2e8f0; border-radius: 9px; outline-color: #bd111b; font: inherit; font-weight: 400; }
+.data-value-field textarea { min-height: 70px; padding: 10px; resize: vertical; }
+.data-value-report-list { display: flex; flex-direction: column; gap: 7px; }
+.data-value-report-list button { display: flex; flex-direction: column; gap: 4px; padding: 11px; color: #52617a; background: #fff; border: 1px solid #e6ebf2; border-radius: 10px; text-align: left; font-size: 9px; }
+.data-value-report-list button.active { color: #b51a24; background: #fff4f5; border-color: #efccd0; }
+.data-value-report-list strong { font-size: 10px; }
+.data-value-empty { color: #91a0b5; font-size: 10px; line-height: 1.6; }
+.data-value-form { overflow: hidden; }
+.data-value-form header { display: flex; align-items: center; min-height: 65px; padding: 13px 16px; border-bottom: 1px solid #edf1f5; }
+.data-value-form header > div { display: flex; align-items: center; gap: 10px; color: #bd111b; }
+.data-value-form header h2 { margin: 0 0 3px; color: #26344b; font-size: 13px; }
+.data-value-form header p { margin: 0; color: #91a0b5; font-size: 9px; }
+.data-value-form fieldset { display: flex; flex-direction: column; gap: 13px; margin: 0; padding: 16px; border: 0; }
+.data-value-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 11px; }
+.data-value-form h3 { margin: 8px 0 0; color: #26344b; font-size: 12px; }
+.data-value-subject { display: grid; grid-template-columns: 130px minmax(150px, 1fr) 100px minmax(180px, 1.2fr) 30px; gap: 9px; align-items: end; }
+.data-value-subject > button { width: 30px; height: 39px; color: #d13a45; background: #fff; border: 1px solid #ecdce0; border-radius: 9px; }
+.data-value-add { width: max-content; display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 11px; color: #52617a; background: #fff; border: 1px solid #e2e8f0; border-radius: 9px; font-size: 10px; }
+.data-value-form footer { display: flex; justify-content: flex-end; padding: 13px 16px; border-top: 1px solid #edf1f5; }
+.data-value-error { margin-bottom: 12px; padding: 11px 13px; color: #a20d18; background: #fff1f2; border-radius: 9px; font-size: 11px; }
+@media (max-width: 1000px) { .data-value-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .data-value-subject { grid-template-columns: 120px 1fr 90px 30px; } .subject-capacity { grid-column: 1 / 4; } }
+@media (max-width: 760px) { .data-value-layout { grid-template-columns: 1fr; } .data-value-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .data-value-subject { grid-template-columns: 1fr 1fr; } .subject-capacity { grid-column: 1 / -1; } .data-value-subject > button { justify-self: end; } }
+@media (max-width: 430px) { .data-value-grid { grid-template-columns: 1fr; } .data-value-subject { grid-template-columns: 1fr; } .subject-capacity { grid-column: auto; } }

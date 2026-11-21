@@ -5,10 +5,13 @@ Frontend adalah aplikasi React dengan Vite untuk pratinjau alur Buku Induk Siswa
 ## Status saat ini
 
 - Tersedia tampilan login dan dashboard untuk role operator/admin, guru, dan siswa.
-- Layar dashboard menggunakan data contoh/pratinjau.
-- Backend, API, autentikasi sungguhan, dan penyimpanan data server belum tersedia.
+- Login memakai autentikasi JWT dari backend.
+- Navigasi operator dipangkas menjadi **Dashboard**, **Data Murid**, **Data Nilai**, dan **Cetak Buku Induk**.
+- Modul **Data Murid** terhubung ke API untuk daftar, pencarian, filter status, detail, tambah, ubah, dan hapus; identitas, keluarga, serta riwayat masuk disimpan bersama.
+- Modul **Data Nilai** terhubung ke API siswa dan rapor untuk membuat, melihat, mengubah header rapor, dan menyimpan nilai mata pelajaran.
+- Modul **Cetak Buku Induk** menghasilkan PDF dari data murid dan rapor melalui endpoint backend.
+- Modul dashboard lainnya masih menggunakan data contoh/pratinjau. Hanya fitur yang memiliki endpoint backend yang dapat diintegrasikan.
 - Sebagian tombol aksi hanya menampilkan umpan balik pratinjau. Beberapa layar guru dapat mengunduh CSV secara lokal, tetapi isinya tetap data contoh dan bukan data dari server.
-- Unggah, perubahan data, dan penyimpanan belum terhubung ke backend.
 - Role aktif dan menu terakhir disimpan di `sessionStorage` agar tetap terbuka saat halaman di-refresh pada tab yang sama. Tombol keluar menghapus sesi tersebut.
 
 ## Menjalankan aplikasi
@@ -21,6 +24,10 @@ npm run dev
 ```
 
 Vite akan menampilkan alamat lokal yang dapat dibuka di browser.
+
+Backend harus berjalan di `http://localhost:5000/api` (atau atur `VITE_API_BASE_URL` di `frontend/.env`). Jalankan backend mengikuti petunjuk di [README backend](../backend/README.md).
+
+Untuk login pengujian setelah seed SQL diimpor, gunakan username `operator.sdn12` dan kata sandi `password`.
 
 ## Perintah yang tersedia
 
@@ -136,11 +143,16 @@ Menu guru mencakup:
 
 Menu dan data dashboard saat ini adalah pratinjau. Penambahan layar belum membuat endpoint atau menyimpan data ke backend.
 
-## Rencana integrasi backend
+## Integrasi data siswa
 
-Alur domain yang direncanakan memiliki dua kelompok data utama:
+Modul Data Induk Siswa menggunakan endpoint backend berikut:
 
-1. **Data murid** — biodata, keluarga/wali, dan informasi murid baru atau mutasi masuk.
-2. **Data nilai** — nilai rapor yang dicatat per murid, kelas, tahun ajaran, dan semester.
+- `GET /api/siswa` untuk daftar, pencarian, dan filter status.
+- `GET /api/siswa/:nisn` untuk detail siswa, keluarga, dan riwayat masuk.
+- `POST /api/siswa` untuk menambahkan siswa beserta data keluarga dan riwayat masuk.
+- `PUT /api/siswa/:nisn` untuk mengubah data terkait.
+- `DELETE /api/siswa/:nisn` untuk menghapus siswa.
 
-Output buku induk nantinya disusun dari data murid dan nilai. Kontrak API, format validasi, serta perilaku unggah, simpan, ekspor, dan cetak perlu ditetapkan saat backend mulai diimplementasikan. Lihat [README backend](../backend/README.md) untuk status dan rancangan datanya.
+Endpoint siswa memerlukan login role operator atau guru; perubahan data hanya tersedia untuk operator. Dashboard operator/guru/murid serta halaman master siswa, guru, dan akun operator terhubung ke database. Submodul rapor, dokumen, kelas, dan beberapa fitur akademik lainnya masih perlu integrasi tersendiri.
+
+Halaman Data Guru menggunakan `GET /api/guru` dan `POST /api/guru` untuk menyimpan profil beserta akun guru. Manajemen Akun memakai `GET /api/users` dan `POST /api/users` untuk mengelola akun operator. Akun contoh tetap dipertahankan, tetapi tidak lagi membuat profil siswa/guru contoh atau baris contoh di halaman master.

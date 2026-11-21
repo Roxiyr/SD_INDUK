@@ -1,0 +1,42 @@
+.approval-page-heading {
+  padding-top: 26px;
+  padding-bottom: 29px;
+}
+
+.approval-card {
+  width: min(100%, 480px);
+  justify-self: center;
+}
+
+.approval-error { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; padding: 11px 14px; color: #a1212a; background: #fff0f1; border: 1px solid #f5d2d5; border-radius: 10px; font-size: 11px; }
+.approval-error button { color: inherit; background: transparent; border: 0; font-size: 17px; }
+.approval-list { display: grid; gap: 14px; }
+.approval-record { padding: 19px; background: #fff; border: 1px solid #e6ebf2; border-radius: 14px; }
+.approval-record > header { display: flex; justify-content: space-between; gap: 12px; }
+.approval-record h2 { margin: 5px 0; color: #202b40; font-size: 16px; }
+.approval-record header p, .approval-review-note { margin: 0; color: #7e8ba0; font-size: 10px; }
+.approval-changes { display: grid; gap: 8px; margin: 16px 0; }
+.approval-changes > div { display: grid; grid-template-columns: minmax(100px, 0.6fr) 1.4fr; gap: 12px; padding: 10px; background: #f7f9fc; border-radius: 8px; font-size: 11px; }
+.approval-changes strong { color: #526179; text-transform: capitalize; }
+.approval-changes span { color: #27364d; overflow-wrap: anywhere; }
+.approval-changes b { padding: 0 6px; color: #bd111b; }
+.approval-note-field { display: flex; flex-direction: column; gap: 6px; color: #526179; font-size: 10px; }
+.approval-note-field textarea { padding: 9px; color: #27364d; border: 1px solid #e0e6ef; border-radius: 8px; font: inherit; resize: vertical; }
+.approval-record footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+.approval-record footer button { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border: 0; border-radius: 8px; font-size: 10px; font-weight: 650; cursor: pointer; }
+.approval-record footer button:disabled { opacity: 0.6; cursor: wait; }
+.approval-reject { color: #9e2730; background: #fff0f1; }
+.approval-accept { color: #fff; background: #1c8b58; }
+.approval-empty { margin: 0; padding: 28px; color: #7e8ba0; background: #fff; border: 1px solid #e6ebf2; border-radius: 14px; text-align: center; font-size: 12px; }
+
+@media (max-width: 600px) {
+  .approval-page-heading {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .approval-card {
+    padding: 23px 18px;
+  }
+  .approval-changes > div { grid-template-columns: 1fr; gap: 5px; }
+}

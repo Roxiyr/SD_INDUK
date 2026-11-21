@@ -1,0 +1,10 @@
+# Backend-local ignores. Project-wide rules are maintained in ../.gitignore.
+node_modules/
+.env
+.env.*
+!.env.example
+!.env.*.example
+uploads/*
+!uploads/.gitkeep
+logs/
+*.log

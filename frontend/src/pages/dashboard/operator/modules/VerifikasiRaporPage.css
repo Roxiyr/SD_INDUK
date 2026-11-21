@@ -1,0 +1,33 @@
+.operator-report-review { display: grid; gap: 14px; }
+.operator-review-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.operator-review-heading span { color: #bd101b; font-size: 9px; font-weight: 700; letter-spacing: 1px; }
+.operator-review-heading h1 { margin: 5px 0; color: #172238; font-size: 23px; }
+.operator-review-heading p { margin: 0; color: #8492a8; font-size: 11px; }
+.operator-review-heading > strong { padding: 8px 11px; color: #a76b00; background: #fff8e9; border-radius: 20px; font-size: 10px; white-space: nowrap; }
+.operator-review-search { display: grid; gap: 6px; max-width: 430px; color: #526179; font-size: 10px; font-weight: 650; }
+.operator-review-search input, .operator-review-list textarea { width: 100%; padding: 9px 10px; color: #27364d; background: #fff; border: 1px solid #e0e6ef; border-radius: 8px; font: inherit; }
+.operator-review-list { display: grid; gap: 10px; }
+.operator-review-list article { display: grid; gap: 12px; padding: 15px; background: #fff; border: 1px solid #e5eaf2; border-radius: 13px; }
+.operator-review-list article > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.operator-review-list article > header > div { display: grid; gap: 5px; }
+.operator-review-list article > header strong { color: #25334b; font-size: 12px; }
+.operator-review-list article > header span, .operator-review-list article > header b { color: #8492a8; font-size: 9px; }
+.operator-review-list article > header b { white-space: nowrap; }
+.operator-review-list article > label { display: grid; gap: 6px; color: #526179; font-size: 10px; font-weight: 650; }
+.operator-review-list textarea { resize: vertical; }
+.operator-review-teacher-note { margin: 0; padding: 9px 10px; color: #526179; background: #f7f9fb; border-radius: 8px; font-size: 10px; }
+.operator-review-list article > footer { display: flex; justify-content: flex-end; gap: 7px; padding-top: 10px; border-top: 1px solid #edf0f5; }
+.operator-review-list article > footer button { min-height: 34px; padding: 0 11px; border: 1px solid transparent; border-radius: 8px; font-size: 9px; font-weight: 650; }
+.operator-review-list article > footer button:disabled { opacity: .6; }
+.operator-review-revision { color: #8c5a00; background: #fff8e9; border-color: #f2e3bf !important; }
+.operator-review-reject { color: #a1212a; background: #fff0f1; border-color: #f2d5d8 !important; }
+.operator-review-approve { color: #fff; background: #14845f; }
+.operator-review-empty, .operator-review-notice, .operator-review-error { margin: 0; padding: 12px; color: #718097; background: #fff; border-radius: 9px; font-size: 11px; }
+.operator-review-notice { color: #1d7149; background: #eaf8f1; }
+.operator-review-error { color: #a1212a; background: #fff0f1; }
+.operator-approved-reports { display: grid; gap: 12px; padding-top: 16px; border-top: 1px solid #e5eaf2; }
+.operator-approved-reports > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.operator-approved-reports > header h2 { margin: 0 0 5px; color: #25334b; font-size: 15px; }
+.operator-approved-reports > header p { margin: 0; color: #8492a8; font-size: 10px; }
+.operator-approved-reports > header > strong { padding: 8px 11px; color: #1d7149; background: #eaf8f1; border-radius: 20px; font-size: 10px; white-space: nowrap; }
+@media (max-width: 560px) { .operator-review-list article > header { flex-direction: column; } .operator-review-list article > footer { flex-wrap: wrap; } .operator-review-list article > footer button { flex: 1; } }

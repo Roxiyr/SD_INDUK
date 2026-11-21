@@ -1,11 +1,11 @@
 import LoginPage from './pages/loginpage/LoginPage.jsx'
-import DashboardPage from './pages/dashboard/DashboardPage.jsx'
+import OperatorDashboardPage from './pages/dashboard/operator/OperatorDashboardPage.jsx'
 import TeacherDashboardPage from './pages/dashboard/teacher/TeacherDashboardPage.jsx'
 import StudentDashboardPage from './pages/dashboard/student/StudentDashboardPage.jsx'
 import useSessionState from './hooks/useSessionState.js'
 
 const roles = ['operator', 'teacher', 'student']
-const sessionKeys = ['sd-induk.activeRole', 'sd-induk.operatorPage', 'sd-induk.operatorRole', 'sd-induk.teacherPage', 'sd-induk.studentPage']
+const sessionKeys = ['sd-induk.activeRole', 'sd-induk.operatorPage', 'sd-induk.operatorRole', 'sd-induk.teacherPage', 'sd-induk.studentPage', 'sd-induk.token', 'sd-induk.user']
 
 function App() {
   const [activeRole, setActiveRole] = useSessionState('sd-induk.activeRole', null, roles)
@@ -24,7 +24,7 @@ function App() {
   }
 
   if (activeRole === 'operator') {
-    return <DashboardPage onLogout={handleLogout} />
+    return <OperatorDashboardPage onLogout={handleLogout} />
   }
 
   return <LoginPage onLogin={setActiveRole} />
