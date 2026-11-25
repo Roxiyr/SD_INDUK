@@ -1,0 +1,2 @@
+/** Memetakan token identitas sekolah sebagai warna Tailwind. @returns {Object} Konfigurasi tema Tailwind. */
+export default { content: ['./index.html','./src/**/*.{js,jsx}'], theme: { extend: { colors: { primary: 'var(--color-primary)', ink: 'var(--color-text-primary)', muted: 'var(--color-text-secondary)', app: 'var(--color-bg-app)', surface: 'var(--color-surface)', line: 'var(--color-border-main)' } } }, plugins: [] };

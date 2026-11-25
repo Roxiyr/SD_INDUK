@@ -1,0 +1,5 @@
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+
+/** Mengonfigurasi Vite, React, dan lingkungan unit test jsdom. @returns {Object} Konfigurasi build dan test Vite. */
+export default defineConfig({ plugins: [react()], test: { globals: true, environment: 'jsdom', setupFiles: './src/testSetup.js' } });

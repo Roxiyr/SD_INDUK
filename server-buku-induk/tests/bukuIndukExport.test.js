@@ -1,0 +1,9 @@
+jest.mock('../config/database',()=>({execute:jest.fn(),query:jest.fn()}));
+const pool=require('../config/database');const {getBukuIndukByNisn,getBukuIndukByClass}=require('../controllers/gradeController');
+const response=()=>({status:jest.fn().mockReturnThis(),json:jest.fn()});
+describe('Buku Induk authorization and data',()=>{
+ beforeEach(()=>{pool.execute.mockReset();pool.query.mockReset();});
+ test('guru non-wali kelas ditolak untuk cetak satu siswa',async()=>{pool.execute.mockResolvedValue([[]]);const res=response();await getBukuIndukByNisn({params:{nisn:'1234567890'},user:{role:'GURU',id_referensi:2}},res);expect(res.status).toHaveBeenCalledWith(403);});
+ test('admin memperoleh biodata lengkap serta riwayat rapor agregat',async()=>{pool.execute.mockResolvedValueOnce([[{nisn:'1234567890',nama_lengkap:'Ayu',nama_ayah:'Budi'}]]).mockResolvedValueOnce([[{id_rapor:9,nilai_mapel:[{nama_mapel:'Matematika'}],profil_pancasila:[],nilai_ekstrakurikuler:[]}]]);pool.query.mockResolvedValue([[{nama_sekolah:'SD Contoh'}]]);const res=response();await getBukuIndukByNisn({params:{nisn:'1234567890'},user:{role:'ADMIN'}},res);expect(res.json.mock.calls[0][0].data.siswa.nama_ayah).toBe('Budi');expect(res.json.mock.calls[0][0].data.rapor[0].profil_pancasila).toEqual([]);});
+ test('export kelas menghasilkan detail kelas dan roster terurut NIS',async()=>{pool.execute.mockResolvedValueOnce([[{id_kelas:2,nama_kelas:'1A',id_wali_kelas:3}]]).mockResolvedValueOnce([[]]);pool.query.mockResolvedValue([[{nama_sekolah:'SD Contoh'}]]);const res=response();await getBukuIndukByClass({params:{id_kelas:2},user:{role:'ADMIN'}},res);expect(pool.execute.mock.calls[1][0]).toContain('ORDER BY nis ASC');expect(res.json.mock.calls[0][0].data.kelas.nama_kelas).toBe('1A');expect(res.json.mock.calls[0][0].data.siswa).toEqual([]);});
+});
