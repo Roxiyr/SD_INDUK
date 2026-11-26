@@ -1,20 +1,82 @@
-const express=require('express');
-const admin=require('../controllers/adminController');
-const imports=require('../controllers/importController');
-const {verifyToken,requireRole}=require('../middlewares/authMiddleware');
-const upload=require('../middlewares/uploadMiddleware');
-const asyncHandler=require('../middlewares/asyncHandler');
-const router=express.Router();
-router.get('/admin/dashboard',verifyToken,requireRole('ADMIN'),asyncHandler(admin.dashboard));
-router.get('/admin/profil-sekolah',verifyToken,requireRole('ADMIN','GURU'),asyncHandler(admin.getSchool));
-router.put('/admin/profil-sekolah',verifyToken,requireRole('ADMIN'),asyncHandler(admin.updateSchool));
-router.get('/admin/kelas/:id',verifyToken,requireRole('ADMIN'),asyncHandler(admin.getClassDetail));
-router.post('/admin/upload/:type',verifyToken,requireRole('ADMIN'),upload.imageUpload.single('file'),admin.uploadImage);
-router.get('/catalog/ekskul',verifyToken,requireRole('ADMIN','GURU'),asyncHandler(admin.listEkskul));
-router.post('/admin/import/:entity',verifyToken,requireRole('ADMIN'),upload.single('file'),asyncHandler(imports.importExcel));
-router.get('/admin/template/:entity',verifyToken,requireRole('ADMIN'),imports.downloadTemplate);
-router.get('/admin/:entity',verifyToken,requireRole('ADMIN'),asyncHandler(admin.list));
-router.post('/admin/:entity',verifyToken,requireRole('ADMIN'),asyncHandler(admin.create));
-router.put('/admin/:entity/:id',verifyToken,requireRole('ADMIN'),asyncHandler(admin.update));
-router.delete('/admin/:entity/:id',verifyToken,requireRole('ADMIN'),asyncHandler(admin.remove));
-module.exports=router;
+const express = require('express');
+const admin = require('../controllers/adminController');
+const imports = require('../controllers/importController');
+const { verifyToken, requireRole } = require('../middlewares/authMiddleware');
+const upload = require('../middlewares/uploadMiddleware');
+const asyncHandler = require('../middlewares/asyncHandler');
+const router = express.Router();
+router.get(
+  '/admin/dashboard',
+  verifyToken,
+  requireRole('ADMIN'),
+  asyncHandler(admin.dashboard),
+);
+router.get(
+  '/admin/profil-sekolah',
+  verifyToken,
+  requireRole('ADMIN', 'GURU'),
+  asyncHandler(admin.getSchool),
+);
+router.put(
+  '/admin/profil-sekolah',
+  verifyToken,
+  requireRole('ADMIN'),
+  asyncHandler(admin.updateSchool),
+);
+router.get(
+  '/admin/kelas/:id',
+  verifyToken,
+  requireRole('ADMIN'),
+  asyncHandler(admin.getClassDetail),
+);
+router.post(
+  '/admin/upload/:type',
+  verifyToken,
+  requireRole('ADMIN'),
+  upload.imageUpload.single('file'),
+  admin.uploadImage,
+);
+router.get(
+  '/catalog/ekskul',
+  verifyToken,
+  requireRole('ADMIN', 'GURU'),
+  asyncHandler(admin.listEkskul),
+);
+router.post(
+  '/admin/import/:entity',
+  verifyToken,
+  requireRole('ADMIN'),
+  upload.single('file'),
+  asyncHandler(imports.importExcel),
+);
+router.get(
+  '/admin/template/:entity',
+  verifyToken,
+  requireRole('ADMIN'),
+  imports.downloadTemplate,
+);
+router.get(
+  '/admin/:entity',
+  verifyToken,
+  requireRole('ADMIN'),
+  asyncHandler(admin.list),
+);
+router.post(
+  '/admin/:entity',
+  verifyToken,
+  requireRole('ADMIN'),
+  asyncHandler(admin.create),
+);
+router.put(
+  '/admin/:entity/:id',
+  verifyToken,
+  requireRole('ADMIN'),
+  asyncHandler(admin.update),
+);
+router.delete(
+  '/admin/:entity/:id',
+  verifyToken,
+  requireRole('ADMIN'),
+  asyncHandler(admin.remove),
+);
+module.exports = router;

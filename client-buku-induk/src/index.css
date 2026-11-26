@@ -31,6 +31,7 @@
 }
 body {
   margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   background: var(--color-bg-app);
   font-size: 14px;
 }
@@ -95,18 +96,21 @@ button {
   margin: 48px 0 13px 10px;
 }
 .sidebar nav {
-  display: grid;
-  gap: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 .nav-item {
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
   text-decoration: none;
   color: #738097;
-  padding: 12px 13px;
-  border-radius: 10px;
-  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
 }
 .nav-item:hover {
   background: #faf4f5;
@@ -461,12 +465,30 @@ tbody tr:hover {
   align-items: center;
 }
 .inline-message {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   padding: 11px 13px;
   margin: 0 0 14px;
   border-radius: 8px;
   background: #fff8e9;
   color: #88600f;
   font-size: 12px;
+}
+.notice-close {
+  border: 0;
+  background: none;
+  color: inherit;
+  padding: 2px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.notice-close:hover {
+  background: rgba(136, 96, 15, 0.12);
 }
 .filter-bar {
   background: #fff;
@@ -654,24 +676,6 @@ tbody tr:hover {
   color: #e7dede;
   font-size: 11px;
 }
-.feature-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 13px;
-}
-.feature-row div {
-  flex: 1;
-  padding: 12px;
-  background: #ffffffa8;
-  border: 1px solid #fff8;
-  border-radius: 9px;
-  color: #514447;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 10px;
-  font-weight: 700;
-}
 .hero-foot {
   color: #fff;
   text-shadow: 0 1px 4px #0009;
@@ -710,7 +714,7 @@ tbody tr:hover {
   display: grid;
   gap: 9px;
 }
-.form-panel form > label:not(.remember) {
+.form-panel form > label {
   font-size: 10px;
   font-weight: 700;
   color: #46536b;
@@ -763,17 +767,6 @@ tbody tr:hover {
   background: #fff;
   color: #8490a4;
   padding: 0 12px;
-}
-.remember {
-  display: flex;
-  gap: 7px;
-  align-items: center;
-  color: #758097;
-  font-size: 10px;
-  margin: 3px 0 7px;
-}
-.remember input {
-  accent-color: #a00010;
 }
 .login-error {
   background: #fff0f1;
@@ -993,24 +986,6 @@ tbody tr:hover {
   }
 }
 @media (max-width: 680px) {
-  .sidebar {
-    position: static;
-    width: auto;
-    height: auto;
-    padding: 13px 15px;
-    display: grid;
-    grid-template-columns: 42px 1fr auto;
-    align-items: center;
-  }
-  .brand-copy {
-    position: static;
-    margin-left: 0;
-  }
-  .sidebar .nav-label,
-  .sidebar nav,
-  .sidebar-bottom {
-    display: none;
-  }
   .main-area {
     margin: 0;
   }
@@ -1219,14 +1194,6 @@ tbody tr:hover {
   background: #3d0710d9;
 }
 @media (max-width: 680px) {
-  .sidebar-bottom {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .sidebar-bottom .profile-chip {
-    display: none;
-  }
   .topbar {
     align-items: center;
   }
@@ -1257,12 +1224,6 @@ tbody tr:hover {
   width: 190px;
 }
 @media (max-width: 680px) {
-  .sidebar .sidebar-bottom {
-    display: flex;
-  }
-  .sidebar .sidebar-bottom .profile-chip {
-    display: none;
-  }
   .top-meta .date-label {
     display: none;
   }
@@ -1276,24 +1237,14 @@ tbody tr:hover {
 }
 .hero-panel {
   order: 1;
-  background-color: var(--login-photo-panel);
-  background-image: linear-gradient(145deg, #493c38, #382c2b);
+  background-color: var(--login-maroon);
+  background-image: linear-gradient(
+    145deg,
+    var(--login-maroon) 0%,
+    var(--color-primary) 60%,
+    var(--color-primary-dark) 100%
+  );
   overflow: hidden;
-}
-.school-illustration {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 48%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 24px 24px 0;
-  opacity: 0.9;
-}
-.school-illustration svg {
-  width: min(100%, 520px);
-  height: 100%;
-  filter: drop-shadow(0 14px 24px #160d0d35);
 }
 .hero-content {
   align-self: flex-end;
@@ -1348,12 +1299,6 @@ tbody tr:hover {
   .form-panel {
     order: 0;
   }
-  .school-illustration {
-    height: 42%;
-  }
-}
-.sidebar .sidebar-bottom {
-  display: flex;
 }
 .table-filters {
   display: flex;

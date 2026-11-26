@@ -1,10 +1,30 @@
-const express=require('express');
-const grades=require('../controllers/gradeController');
-const {verifyToken,requireRole}=require('../middlewares/authMiddleware');
-const asyncHandler=require('../middlewares/asyncHandler');
-const router=express.Router();
-router.get('/classes/:id_kelas/export-buku-induk',verifyToken,requireRole('ADMIN','GURU'),asyncHandler(grades.getBukuIndukByClass));
-router.get('/grades/class-sheet',verifyToken,requireRole('ADMIN','GURU'),asyncHandler(grades.getClassSheet));
-router.post('/grades/mapel',verifyToken,requireRole('ADMIN','GURU'),asyncHandler(grades.upsertNilaiMapel));
-router.post('/grades/wali-kelas',verifyToken,requireRole('ADMIN','GURU'),asyncHandler(grades.upsertWaliKelas));
-module.exports=router;
+const express = require('express');
+const grades = require('../controllers/gradeController');
+const { verifyToken, requireRole } = require('../middlewares/authMiddleware');
+const asyncHandler = require('../middlewares/asyncHandler');
+const router = express.Router();
+router.get(
+  '/classes/:id_kelas/export-buku-induk',
+  verifyToken,
+  requireRole('ADMIN', 'GURU'),
+  asyncHandler(grades.getBukuIndukByClass),
+);
+router.get(
+  '/grades/class-sheet',
+  verifyToken,
+  requireRole('ADMIN', 'GURU'),
+  asyncHandler(grades.getClassSheet),
+);
+router.post(
+  '/grades/mapel',
+  verifyToken,
+  requireRole('ADMIN', 'GURU'),
+  asyncHandler(grades.upsertNilaiMapel),
+);
+router.post(
+  '/grades/wali-kelas',
+  verifyToken,
+  requireRole('ADMIN', 'GURU'),
+  asyncHandler(grades.upsertWaliKelas),
+);
+module.exports = router;
